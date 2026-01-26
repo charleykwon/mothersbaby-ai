@@ -184,7 +184,7 @@ export default async function handler(req, res) {
         return { ...item, score };
       });
 
-      results = results.filter(item => item.score > 0);
+     results = results.filter(item => item.score > 0 && item.content && item.content.length >= 100);
       results.sort((a, b) => b.score - a.score);
     }
 
