@@ -16,7 +16,42 @@
             --warm-gray: #6B6B6B;
             --urgent-red: #E74C3C;
             --urgent-orange: #F39C12;
+            --bg-color: #F5F5F5;
+            --card-bg: white;
+            --text-color: #3D4A2D;
+            --border-color: #E0E0E0;
         }
+        
+        /* 야간 모드 */
+        body.night-mode {
+            --olive: #4A5530;
+            --olive-light: #6B7A4B;
+            --olive-bg: #2A2F20;
+            --black-olive: #E8E8E0;
+            --warm-gray: #A0A0A0;
+            --bg-color: #1A1C16;
+            --card-bg: #252820;
+            --text-color: #E8E8E0;
+            --border-color: #3A3F30;
+        }
+        body.night-mode { background: var(--bg-color); }
+        body.night-mode .page-wrapper { background: var(--card-bg); }
+        body.night-mode .header { background: linear-gradient(135deg, #3A4528 0%, #4A5530 100%); }
+        body.night-mode .search-bar { background: #1F2218; border-color: var(--border-color); }
+        body.night-mode .search-input-wrap { background: var(--card-bg); border-color: var(--border-color); }
+        body.night-mode .search-input { background: var(--card-bg); color: var(--text-color); }
+        body.night-mode .bubble { background: #2A2F20; color: var(--text-color); }
+        body.night-mode .category-card { background: var(--card-bg); border-color: var(--border-color); color: var(--text-color); }
+        body.night-mode .category-desc { color: var(--warm-gray); }
+        body.night-mode .answer-card { background: var(--card-bg); border-color: var(--border-color); }
+        body.night-mode .answer-title { color: var(--text-color); }
+        body.night-mode .answer-content { color: #C0C0B8; }
+        body.night-mode .related-btn { background: #1F2218; border-color: var(--border-color); color: var(--text-color); }
+        body.night-mode .action-btn { background: var(--card-bg); border-color: var(--border-color); color: var(--text-color); }
+        body.night-mode .action-btn.back { background: #1F2218; }
+        body.night-mode .footer { background: #1F2218; border-color: var(--border-color); color: var(--warm-gray); }
+        body.night-mode .keyword { background: #3A4528; color: #A8B890; }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { height: 100%; }
         body {
@@ -25,19 +60,21 @@
             color: var(--black-olive);
             margin: 0;
             padding: 20px;
-            background: #F5F5F5;
+            background: var(--bg-color);
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background 0.3s ease;
         }
         .page-wrapper {
             width: 100%;
             max-width: 480px;
             min-height: calc(100vh - 40px);
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 2px 20px rgba(0,0,0,0.08);
             overflow: hidden;
+            transition: background 0.3s ease;
         }
         .container {
             width: 100%;
@@ -46,22 +83,71 @@
             flex-direction: column;
         }
         @media (max-width: 500px) {
-            body { padding: 0; background: white; }
+            body { padding: 0; background: var(--card-bg); }
             .page-wrapper { max-width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none; }
             .container { min-height: 100vh; }
         }
+        
+        /* 확장된 헤더 */
         .header {
-            background: linear-gradient(135deg, var(--olive) 0%, var(--olive-light) 100%);
+            background: linear-gradient(180deg, var(--olive) 0%, var(--olive-light) 100%);
             color: white;
-            padding: 24px 20px;
+            padding: 50px 20px 60px;
             text-align: center;
+            position: relative;
+            border-bottom: 4px solid var(--pink);
+            border-radius: 0 0 30px 30px;
         }
-        .header h1 { font-size: 20px; font-weight: 500; }
-        .header p { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 42px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.5px; }
+        .header p { font-size: 14px; opacity: 0.9; font-weight: 300; }
+        
+        /* 야간 모드 토글 */
+        .night-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .night-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        .night-toggle:active {
+            transform: scale(0.95);
+        }
+        .night-toggle:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        
         .search-bar {
             padding: 16px 20px;
             background: #FAFAFA;
             border-bottom: 1px solid #eee;
+            transition: background 0.3s ease;
         }
         .search-input-wrap {
             display: flex;
@@ -289,8 +375,10 @@
     <div class="page-wrapper">
         <div class="container">
             <header class="header">
-                <h1>🤱 육아 컴패니언 AI</h1>
-                <p>당신의 모유수유 여정을 함께합니다</p>
+                <button class="night-toggle" id="nightToggle" onclick="toggleNightMode()">🌙</button>
+                <div class="header-icon">🤱</div>
+                <h1>육아 컴패니언 AI</h1>
+                <p>With every moment</p>
             </header>
             <div class="search-bar">
                 <div class="search-input-wrap">
@@ -558,16 +646,18 @@
             
             lastMsg.innerHTML = html;
             
-            // 관련 버튼 이벤트
-            lastMsg.querySelectorAll('.related-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+            // 관련 버튼 이벤트 - chatArea 전체에서 검색
+            chatArea.querySelectorAll('.related-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const unitId = this.getAttribute('data-unit-id');
                     if (unitId) showDetail(unitId);
-                });
+                };
             });
             
             // 액션 버튼 이벤트
-            setupActionButtons(lastMsg, main);
+            setupActionButtons(chatArea, main);
         }
         
         function showDetail(unitId) {
@@ -676,7 +766,35 @@
             return div.innerHTML;
         }
         
+        // 야간 모드 토글
+        function toggleNightMode() {
+            const body = document.body;
+            const toggle = document.getElementById('nightToggle');
+            body.classList.toggle('night-mode');
+            
+            if (body.classList.contains('night-mode')) {
+                toggle.textContent = '☀️';
+                localStorage.setItem('nightMode', 'true');
+            } else {
+                toggle.textContent = '🌙';
+                localStorage.setItem('nightMode', 'false');
+            }
+        }
+        
+        // 야간 모드 초기화 (저장된 설정 또는 시간 기반)
+        function initNightMode() {
+            const saved = localStorage.getItem('nightMode');
+            const hour = new Date().getHours();
+            const isNightTime = hour >= 20 || hour < 6; // 저녁 8시 ~ 아침 6시
+            
+            if (saved === 'true' || (saved === null && isNightTime)) {
+                document.body.classList.add('night-mode');
+                document.getElementById('nightToggle').textContent = '☀️';
+            }
+        }
+        
         searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
+        initNightMode();
         renderHome();
     </script>
 </body>
