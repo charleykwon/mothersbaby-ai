@@ -1390,17 +1390,16 @@ function showResultDetail(unit) {
     const newCard = document.createElement('div');
     newCard.className = 'message';
     newCard.style.animation = 'fadeIn 0.3s ease';
-    newCard.innerHTML = `
-        <div class="answer-card ${isUrgent ? 'urgent' : ''}">
-            <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
-            <div class="answer-title">${escapeHtml(unit.title)}</div>
-            <div class="answer-content">${formatContent(unit.content)}</div>
-            ${unit.keywords?.length ? '<div class="answer-keywords">' + (Array.isArray(unit.keywords) ? unit.keywords : []).map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
-        </div>
-        ${getActionButtons(unit.id, unit.title, unit.content)}
-    `;
+   newCard.innerHTML = `
+    <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+        <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+        <div class="answer-title">${escapeHtml(unit.title)}</div>
+        <div class="answer-content">${formatContent(unit.content)}</div>
+        ${unit.keywords?.length ? '<div class="answer-keywords">' + (Array.isArray(unit.keywords) ? unit.keywords : []).map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+    </div>
+`;
     chatArea.appendChild(newCard);
-    setupActionButtons(newCard, unit);
+    
     chatArea.scrollTop = chatArea.scrollHeight;
 }
         function showDetail(unitId) {
