@@ -51,6 +51,10 @@
         body.night-mode .action-btn.back { background: #1F2218; }
         body.night-mode .footer { background: #1F2218; border-color: var(--border-color); color: var(--warm-gray); }
         body.night-mode .keyword { background: #3A4528; color: #A8B890; }
+        body.night-mode .onboarding-card { background: var(--card-bg); }
+        body.night-mode .onboarding-option { background: var(--card-bg); border-color: var(--olive-light); color: var(--text-color); }
+        body.night-mode .onboarding-question { color: var(--text-color); }
+        body.night-mode .onboarding-back { background: #1F2218; color: var(--warm-gray); }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { height: 100%; }
@@ -369,6 +373,257 @@
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
             40% { transform: scale(1); opacity: 1; }
         }
+        
+        /* 온보딩 스타일 */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .onboarding-card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .onboarding-header {
+            background: linear-gradient(180deg, var(--olive) 0%, var(--olive-light) 100%);
+            color: white;
+            padding: 40px 24px;
+            text-align: center;
+            border-radius: 0 0 24px 24px;
+        }
+        .onboarding-header-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+        }
+        .onboarding-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .onboarding-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .onboarding-step {
+            display: inline-block;
+            padding: 6px 16px;
+            background: white;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--olive);
+            font-weight: 600;
+            margin-top: 16px;
+        }
+        .onboarding-body {
+            padding: 24px;
+        }
+        .onboarding-question {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--black-olive);
+        }
+        .onboarding-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .onboarding-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            background: white;
+            border: 1.5px solid var(--olive);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--black-olive);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .onboarding-option:hover {
+            background: var(--olive-bg);
+        }
+        .onboarding-option:active {
+            transform: scale(0.98);
+        }
+        .onboarding-option.selected {
+            background: var(--olive);
+            color: white;
+            border-color: var(--olive);
+        }
+        .onboarding-back {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #F5F5F5;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--warm-gray);
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .onboarding-skip {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            color: var(--warm-gray);
+            cursor: pointer;
+            margin-top: 8px;
+            text-decoration: underline;
+        }
+        
+        /* 즐겨찾기 버튼 */
+        .bookmark-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--olive);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bookmark-fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+        .bookmark-fab:active {
+            transform: scale(0.95);
+        }
+        .bookmark-fab .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--urgent-red);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 500px) {
+            .bookmark-fab {
+                bottom: 70px;
+                right: 16px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+        
+        /* 즐겨찾기 목록 */
+        .bookmark-list {
+            padding: 16px;
+        }
+        .bookmark-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .bookmark-list-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--black-olive);
+        }
+        .bookmark-list-count {
+            font-size: 13px;
+            color: var(--warm-gray);
+        }
+        .bookmark-item {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .bookmark-item:hover {
+            border-color: var(--olive);
+            background: var(--olive-bg);
+        }
+        .bookmark-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--black-olive);
+            margin-bottom: 4px;
+        }
+        .bookmark-item-category {
+            font-size: 12px;
+            color: var(--warm-gray);
+        }
+        .bookmark-item-remove {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--warm-gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+        }
+        .bookmark-item-remove:hover {
+            color: var(--urgent-red);
+        }
+        .bookmark-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--warm-gray);
+        }
+        .bookmark-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        body.night-mode .bookmark-item {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+        body.night-mode .bookmark-item-title {
+            color: var(--text-color);
+        }
     </style>
 </head>
 <body>
@@ -393,6 +648,10 @@
             </footer>
         </div>
     </div>
+    <button class="bookmark-fab" id="bookmarkFab" onclick="showBookmarkList()">
+        ⭐
+        <span class="badge" id="bookmarkBadge" style="display:none;">0</span>
+    </button>
     <script>
         const knowledgeUnits = [
             // ========== 자세/물림 ==========
@@ -677,6 +936,125 @@
                     </div>
                 </div>
             `;
+            updateBookmarkBadge();
+        }
+        
+        // 즐겨찾기 관련 함수
+        function getBookmarks() {
+            return JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        }
+        
+        function updateBookmarkBadge() {
+            const bookmarks = getBookmarks();
+            const badge = document.getElementById('bookmarkBadge');
+            if (bookmarks.length > 0) {
+                badge.textContent = bookmarks.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        function showBookmarkList() {
+            const bookmarks = getBookmarks();
+            const bookmarkedUnits = knowledgeUnits.filter(u => bookmarks.includes(u.id));
+            
+            if (bookmarkedUnits.length === 0) {
+                chatArea.innerHTML = `
+                    <button class="back-btn" onclick="renderHome()">← 처음으로</button>
+                    <div class="bookmark-list">
+                        <div class="bookmark-empty">
+                            <div class="bookmark-empty-icon">⭐</div>
+                            <p>저장된 즐겨찾기가 없어요</p>
+                            <p style="font-size:13px;margin-top:8px;">유용한 정보를 찾으면<br>⭐ 버튼으로 저장해보세요!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 카테고리별로 그룹핑
+            const grouped = {};
+            bookmarkedUnits.forEach(unit => {
+                const cat = categories.find(c => c.id === unit.category) || { icon: '📌', title: '기타' };
+                if (!grouped[unit.category]) {
+                    grouped[unit.category] = { cat, units: [] };
+                }
+                grouped[unit.category].units.push(unit);
+            });
+            
+            let html = `
+                <button class="back-btn" onclick="renderHome()">← 처음으로</button>
+                <div class="bookmark-list">
+                    <div class="bookmark-list-header">
+                        <span class="bookmark-list-title">⭐ 즐겨찾기</span>
+                        <span class="bookmark-list-count">${bookmarkedUnits.length}개 저장됨</span>
+                    </div>
+            `;
+            
+            Object.values(grouped).forEach(group => {
+                html += `<div style="margin-bottom:16px;">
+                    <div style="font-size:13px;color:var(--warm-gray);margin-bottom:8px;">${group.cat.icon} ${group.cat.title}</div>`;
+                group.units.forEach(unit => {
+                    html += `
+                        <div class="bookmark-item" data-unit-id="${unit.id}">
+                            <button class="bookmark-item-remove" onclick="removeBookmark('${unit.id}', event)">✕</button>
+                            <div class="bookmark-item-title">${unit.title}</div>
+                            <div class="bookmark-item-category">${unit.chapter} • ${unit.timeline || '일반'}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            chatArea.innerHTML = html;
+            
+            // 클릭 이벤트 추가
+            chatArea.querySelectorAll('.bookmark-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bookmark-item-remove')) return;
+                    const unitId = this.getAttribute('data-unit-id');
+                    showDetailFromBookmark(unitId);
+                });
+            });
+        }
+        
+        function removeBookmark(unitId, event) {
+            event.stopPropagation();
+            const bookmarks = getBookmarks();
+            const idx = bookmarks.indexOf(unitId);
+            if (idx !== -1) {
+                bookmarks.splice(idx, 1);
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                showBookmarkList(); // 목록 새로고침
+                updateBookmarkBadge();
+            }
+        }
+        
+        function showDetailFromBookmark(unitId) {
+            const unit = knowledgeUnits.find(u => u.id === unitId);
+            if (!unit) return;
+            
+            const isUrgent = unit.urgency?.includes('즉시대응');
+            const badge = unit.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                          unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                          '<span class="answer-badge badge-normal">' + (unit.timeline || '일반') + '</span>';
+            
+            chatArea.innerHTML = `
+                <button class="back-btn" onclick="showBookmarkList()">← 즐겨찾기로</button>
+                <div class="message">
+                    <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+                        <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+                        <div class="answer-title">${escapeHtml(unit.title)}</div>
+                        <div class="answer-content">${formatContent(unit.content)}</div>
+                        ${unit.keywords?.length ? '<div class="answer-keywords">' + unit.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+                    </div>
+                    ${getActionButtons(unit.id, unit.title, unit.content)}
+                </div>
+            `;
+            
+            setupActionButtons(chatArea, unit);
         }
         
         function expandQuery(query) {
@@ -859,6 +1237,7 @@
                         alert('즐겨찾기가 해제되었습니다.');
                     }
                     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                    updateBookmarkBadge();
                 });
             }
             
@@ -926,7 +1305,176 @@
         
         searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
         initNightMode();
-        renderHome();
+        
+        // 온보딩 데이터
+        const onboardingSteps = [
+            {
+                question: "현재 어떤 상황이신가요?",
+                options: [
+                    { icon: "🤰", text: "임신 중이에요", value: "pregnant" },
+                    { icon: "👶", text: "출산 직후예요 (0-2주)", value: "newborn" },
+                    { icon: "🍼", text: "수유 중이에요 (2주 이상)", value: "nursing" },
+                    { icon: "💼", text: "복직을 앞두고 있어요", value: "returning" }
+                ]
+            },
+            {
+                question: "지금 가장 힘든 점은 어떤 쪽인가요?",
+                options: [
+                    { icon: "🌟", text: "초유는 언제까지?", value: "colostrum" },
+                    { icon: "🤱", text: "젖물림/자세", value: "position" },
+                    { icon: "💧", text: "젖양 걱정", value: "supply" },
+                    { icon: "🩹", text: "가슴 통증/염증", value: "nipple" },
+                    { icon: "👶", text: "아기 상태", value: "baby" }
+                ]
+            },
+            {
+                question: "모유수유 경험이 있으신가요?",
+                options: [
+                    { icon: "🌱", text: "처음이에요", value: "first" },
+                    { icon: "✨", text: "둘째 이상이에요", value: "experienced" }
+                ]
+            }
+        ];
+        
+        let onboardingData = {};
+        let currentStep = 0;
+        
+        function showOnboarding() {
+            // 배지 초기화
+            updateBookmarkBadge();
+            
+            // 이미 완료했으면 스킵
+            if (localStorage.getItem('onboardingComplete')) {
+                renderHome();
+                return;
+            }
+            
+            currentStep = 0;
+            onboardingData = {};
+            renderOnboardingStep();
+        }
+        
+        function renderOnboardingStep() {
+            const step = onboardingSteps[currentStep];
+            const totalSteps = onboardingSteps.length;
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'onboarding-overlay';
+            overlay.id = 'onboardingOverlay';
+            overlay.innerHTML = `
+                <div class="onboarding-card">
+                    <div class="onboarding-header">
+                        <div class="onboarding-header-icon">🤱</div>
+                        <h2>육아 컴패니언 AI</h2>
+                        <p>With every moment</p>
+                        <div class="onboarding-step">Step ${currentStep + 1}/${totalSteps}</div>
+                    </div>
+                    <div class="onboarding-body">
+                        <div class="onboarding-question">${step.question}</div>
+                        <div class="onboarding-options">
+                            ${step.options.map(opt => `
+                                <div class="onboarding-option" onclick="selectOnboardingOption('${opt.value}')">
+                                    ${opt.icon} ${opt.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${currentStep > 0 ? '<button class="onboarding-back" onclick="prevOnboardingStep()">← 이전으로</button>' : ''}
+                        <button class="onboarding-skip" onclick="skipOnboarding()">건너뛰기</button>
+                    </div>
+                </div>
+            `;
+            
+            // 기존 오버레이 제거 후 추가
+            const existing = document.getElementById('onboardingOverlay');
+            if (existing) existing.remove();
+            document.body.appendChild(overlay);
+        }
+        
+        function selectOnboardingOption(value) {
+            onboardingData[`step${currentStep}`] = value;
+            
+            if (currentStep < onboardingSteps.length - 1) {
+                currentStep++;
+                renderOnboardingStep();
+            } else {
+                completeOnboarding();
+            }
+        }
+        
+        function prevOnboardingStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderOnboardingStep();
+            }
+        }
+        
+        function skipOnboarding() {
+            completeOnboarding();
+        }
+        
+        function completeOnboarding() {
+            localStorage.setItem('onboardingComplete', 'true');
+            localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
+            
+            const overlay = document.getElementById('onboardingOverlay');
+            if (overlay) {
+                overlay.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => overlay.remove(), 300);
+            }
+            
+            renderHome();
+            
+            // 선택에 따른 맞춤 인사
+            showPersonalizedGreeting();
+        }
+        
+        function showPersonalizedGreeting() {
+            const data = onboardingData;
+            let greeting = '안녕하세요! 👋';
+            let suggestion = '';
+            
+            if (data.step0 === 'pregnant') {
+                greeting = '임신 축하드려요! 🤰✨';
+                suggestion = '출산 전 모유수유 준비에 대해 알아보세요.';
+            } else if (data.step0 === 'newborn') {
+                greeting = '출산 축하드려요! 👶💕';
+                suggestion = '초기 수유에서 가장 중요한 건 올바른 젖물림이에요.';
+            } else if (data.step0 === 'returning') {
+                greeting = '복직 준비, 응원합니다! 💼';
+                suggestion = '유축과 모유 보관법을 확인해보세요.';
+            }
+            
+            if (data.step1) {
+                const categoryMap = {
+                    'position': 'position',
+                    'supply': 'supply',
+                    'nipple': 'nipple',
+                    'baby': 'urgent'
+                };
+                const suggestedCat = categoryMap[data.step1];
+                if (suggestedCat) {
+                    suggestion += ` <a href="#" onclick="selectCategory('${suggestedCat}'); return false;" style="color:var(--olive);font-weight:600;">관련 정보 보기 →</a>`;
+                }
+            }
+            
+            chatArea.innerHTML = `
+                <div class="message">
+                    <div class="bubble">${greeting}<br><br>${suggestion || '모유수유 여정에서 궁금한 점이 있으시면 카테고리를 선택하거나 검색해보세요.'}</div>
+                    <div class="category-grid">
+                        ${categories.map(cat => `
+                            <div class="category-card ${cat.urgent ? 'urgent' : ''}" onclick="selectCategory('${cat.id}')">
+                                <div class="category-icon">${cat.icon}</div>
+                                <div class="category-title">${cat.title}</div>
+                                <div class="category-desc">${cat.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 시작
+        showOnboarding();
     </script>
 </body>
 </html>
