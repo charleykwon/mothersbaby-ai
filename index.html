@@ -624,6 +624,132 @@
         body.night-mode .bookmark-item-title {
             color: var(--text-color);
         }
+        
+        /* 자동완성 드롭다운 */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+        .autocomplete-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #F0F0F0;
+            transition: background 0.15s;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-item:hover {
+            background: var(--olive-bg);
+        }
+        .autocomplete-item-icon {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+        .autocomplete-item-text {
+            flex: 1;
+            font-size: 14px;
+        }
+        .autocomplete-item-type {
+            font-size: 11px;
+            color: var(--warm-gray);
+            background: #F5F5F5;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .autocomplete-section {
+            padding: 8px 16px 4px;
+            font-size: 11px;
+            color: var(--warm-gray);
+            font-weight: 600;
+            background: #FAFAFA;
+        }
+        
+        /* 인기 검색어 */
+        .popular-searches {
+            padding: 12px 16px;
+        }
+        .popular-title {
+            font-size: 12px;
+            color: var(--warm-gray);
+            margin-bottom: 10px;
+        }
+        .popular-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .popular-tag {
+            padding: 6px 12px;
+            background: var(--olive-bg);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            font-size: 13px;
+            color: var(--olive);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .popular-tag:hover {
+            background: white;
+            border-color: var(--olive);
+        }
+        .popular-tag .rank {
+            font-weight: 600;
+            margin-right: 4px;
+            color: var(--olive-light);
+        }
+        
+        /* 검색 히스토리 */
+        .search-history-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-history-item .remove {
+            color: var(--warm-gray);
+            cursor: pointer;
+            padding: 4px;
+        }
+        .search-history-item .remove:hover {
+            color: var(--urgent-red);
+        }
+        
+        /* 야간 모드 */
+        body.night-mode .autocomplete-dropdown {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+        body.night-mode .autocomplete-item:hover {
+            background: #2A2F20;
+        }
+        body.night-mode .autocomplete-section {
+            background: #1F2218;
+        }
+        body.night-mode .popular-tag {
+            background: #2A2F20;
+            color: #A8B890;
+        }
+        body.night-mode .autocomplete-item-type {
+            background: #2A2F20;
+        }
     </style>
 </head>
 <body>
@@ -637,9 +763,10 @@
             </header>
             <div class="search-bar">
                 <div class="search-input-wrap">
-                    <input type="text" class="search-input" id="searchInput" placeholder="궁금한 것을 검색하세요...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="궁금한 것을 검색하세요..." autocomplete="off">
                     <button class="search-btn" onclick="handleSearch()">🔍</button>
                 </div>
+                <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
             </div>
             <div class="chat-area" id="chatArea"></div>
             <footer class="footer">
@@ -1068,7 +1195,15 @@
             return [...new Set(expanded)];
         }
         
-        function search(query, categoryId = null) {
+        // API 설정
+        const API_CONFIG = {
+            enabled: false, // true로 변경하면 API 사용
+            baseUrl: '/api',
+            timeout: 10000
+        };
+        
+        // 로컬 검색 (기본)
+        function searchLocal(query, categoryId = null) {
             const keywords = expandQuery(query);
             const results = [];
             knowledgeUnits.forEach(unit => {
@@ -1092,6 +1227,61 @@
             return results.slice(0, 5);
         }
         
+        // API 검색 (Supabase + AI)
+        async function searchAPI(query, categoryId = null) {
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, categoryId, limit: 5 })
+                });
+                
+                if (!response.ok) throw new Error('API search failed');
+                
+                const data = await response.json();
+                return data.results.map(unit => ({ unit, score: unit.score || 0 }));
+            } catch (error) {
+                console.error('API search error:', error);
+                return null; // 실패 시 null 반환
+            }
+        }
+        
+        // AI 응답 생성 (옵션)
+        async function getAIResponse(query, context) {
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        query, 
+                        context: context.map(r => r.unit),
+                        userInfo: JSON.parse(localStorage.getItem('onboardingData') || '{}')
+                    })
+                });
+                
+                if (!response.ok) throw new Error('AI chat failed');
+                
+                const data = await response.json();
+                return data.answer;
+            } catch (error) {
+                console.error('AI chat error:', error);
+                return null;
+            }
+        }
+        
+        // 하이브리드 검색 (메인 함수)
+        async function search(query, categoryId = null) {
+            // API가 활성화되어 있으면 API 먼저 시도
+            if (API_CONFIG.enabled) {
+                const apiResults = await searchAPI(query, categoryId);
+                if (apiResults && apiResults.length > 0) {
+                    return apiResults;
+                }
+            }
+            // API 실패 또는 비활성화 시 로컬 검색
+            return searchLocal(query, categoryId);
+        }
+        
         function selectCategory(categoryId) {
             const cat = categories.find(c => c.id === categoryId);
             if (!cat) return;
@@ -1102,10 +1292,11 @@
                 </div>
                 <div class="message"><div class="typing"><span></span><span></span><span></span></div></div>
             `;
-            setTimeout(() => showResults(search('', categoryId), cat), 500);
+            // 로컬 검색 사용 (동기)
+            setTimeout(() => showResults(searchLocal('', categoryId), cat), 500);
         }
         
-        function handleSearch() {
+        async function handleSearch() {
             const query = searchInput.value.trim();
             if (!query) return;
             chatArea.innerHTML = `
@@ -1116,7 +1307,14 @@
                 <div class="message"><div class="typing"><span></span><span></span><span></span></div></div>
             `;
             searchInput.value = '';
-            setTimeout(() => showResults(search(query), null, query), 500);
+            
+            // API 활성화 시 비동기 검색
+            if (API_CONFIG.enabled) {
+                const results = await search(query);
+                showResults(results, null, query);
+            } else {
+                setTimeout(() => showResults(searchLocal(query), null, query), 500);
+            }
         }
         
         function showResults(results, category, query) {
@@ -1305,6 +1503,180 @@
         
         searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
         initNightMode();
+        
+        // 자동완성 및 인기 검색어
+        const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+        
+        // 인기 검색어 (정적 데이터)
+        const popularSearches = [
+            { text: '젖물림', icon: '🤱' },
+            { text: '젖량 부족', icon: '💧' },
+            { text: '유두 통증', icon: '🩹' },
+            { text: '밤수유', icon: '🌙' },
+            { text: '유선염', icon: '🚨' },
+            { text: '334 규칙', icon: '❄️' }
+        ];
+        
+        // 검색 히스토리
+        function getSearchHistory() {
+            return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        }
+        
+        function addSearchHistory(query) {
+            if (!query.trim()) return;
+            let history = getSearchHistory();
+            // 중복 제거
+            history = history.filter(h => h !== query);
+            // 앞에 추가
+            history.unshift(query);
+            // 최대 5개 유지
+            history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+        
+        function removeSearchHistory(query) {
+            let history = getSearchHistory();
+            history = history.filter(h => h !== query);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+            showAutocomplete(''); // 새로고침
+        }
+        
+        // 자동완성 표시
+        function showAutocomplete(query) {
+            const history = getSearchHistory();
+            let html = '';
+            
+            // 입력이 없으면 히스토리 + 인기 검색어 표시
+            if (!query) {
+                if (history.length > 0) {
+                    html += '<div class="autocomplete-section">🕐 최근 검색</div>';
+                    history.forEach(h => {
+                        html += `
+                            <div class="autocomplete-item" onclick="selectAutocomplete('${escapeHtml(h)}')">
+                                <span class="autocomplete-item-icon">🕐</span>
+                                <span class="autocomplete-item-text">${escapeHtml(h)}</span>
+                                <span class="remove" onclick="event.stopPropagation(); removeSearchHistory('${escapeHtml(h)}')">✕</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += '<div class="autocomplete-section">🔥 인기 검색어</div>';
+                popularSearches.forEach((p, i) => {
+                    html += `
+                        <div class="autocomplete-item" onclick="selectAutocomplete('${p.text}')">
+                            <span class="autocomplete-item-icon">${p.icon}</span>
+                            <span class="autocomplete-item-text">${p.text}</span>
+                            <span class="autocomplete-item-type">${i + 1}위</span>
+                        </div>
+                    `;
+                });
+            } else {
+                // 입력이 있으면 매칭되는 제목 검색
+                const matches = knowledgeUnits.filter(unit => 
+                    unit.title.toLowerCase().includes(query.toLowerCase()) ||
+                    (unit.keywords && unit.keywords.some(k => k.toLowerCase().includes(query.toLowerCase())))
+                ).slice(0, 6);
+                
+                if (matches.length > 0) {
+                    html += '<div class="autocomplete-section">📚 관련 정보</div>';
+                    matches.forEach(unit => {
+                        const cat = categories.find(c => c.id === unit.category) || { icon: '📌' };
+                        html += `
+                            <div class="autocomplete-item" onclick="showDetailDirect('${unit.id}')">
+                                <span class="autocomplete-item-icon">${cat.icon}</span>
+                                <span class="autocomplete-item-text">${escapeHtml(unit.title)}</span>
+                                <span class="autocomplete-item-type">${cat.title || ''}</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // 태그 매칭
+                const tagMatches = tagDictionary.filter(tag =>
+                    tag.name.toLowerCase().includes(query.toLowerCase()) ||
+                    (tag.synonyms && tag.synonyms.some(s => s.toLowerCase().includes(query.toLowerCase())))
+                ).slice(0, 3);
+                
+                if (tagMatches.length > 0) {
+                    html += '<div class="autocomplete-section">🏷️ 관련 태그</div>';
+                    tagMatches.forEach(tag => {
+                        html += `
+                            <div class="autocomplete-item" onclick="selectAutocomplete('${tag.name}')">
+                                <span class="autocomplete-item-icon">🏷️</span>
+                                <span class="autocomplete-item-text">${tag.name}</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                if (!matches.length && !tagMatches.length) {
+                    html += `
+                        <div class="autocomplete-item" onclick="handleSearch()">
+                            <span class="autocomplete-item-icon">🔍</span>
+                            <span class="autocomplete-item-text">"${escapeHtml(query)}" 검색하기</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            autocompleteDropdown.innerHTML = html;
+            autocompleteDropdown.classList.add('show');
+        }
+        
+        function hideAutocomplete() {
+            setTimeout(() => {
+                autocompleteDropdown.classList.remove('show');
+            }, 200);
+        }
+        
+        function selectAutocomplete(text) {
+            searchInput.value = text;
+            hideAutocomplete();
+            handleSearch();
+        }
+        
+        function showDetailDirect(unitId) {
+            hideAutocomplete();
+            searchInput.value = '';
+            
+            const unit = knowledgeUnits.find(u => u.id === unitId);
+            if (!unit) return;
+            
+            const isUrgent = unit.urgency?.includes('즉시대응');
+            const badge = unit.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                          unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                          '<span class="answer-badge badge-normal">' + (unit.timeline || '일반') + '</span>';
+            
+            chatArea.innerHTML = `
+                <button class="back-btn" onclick="renderHome()">← 처음으로</button>
+                <div class="message">
+                    <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+                        <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+                        <div class="answer-title">${escapeHtml(unit.title)}</div>
+                        <div class="answer-content">${formatContent(unit.content)}</div>
+                        ${unit.keywords?.length ? '<div class="answer-keywords">' + unit.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+                    </div>
+                    ${getActionButtons(unit.id, unit.title, unit.content)}
+                </div>
+            `;
+            
+            setupActionButtons(chatArea, unit);
+        }
+        
+        // 이벤트 리스너
+        searchInput.addEventListener('focus', () => showAutocomplete(searchInput.value));
+        searchInput.addEventListener('blur', hideAutocomplete);
+        searchInput.addEventListener('input', (e) => showAutocomplete(e.target.value));
+        
+        // 검색 시 히스토리 저장
+        const originalHandleSearch = handleSearch;
+        handleSearch = async function() {
+            const query = searchInput.value.trim();
+            if (query) addSearchHistory(query);
+            hideAutocomplete();
+            await originalHandleSearch();
+        };
         
         // 온보딩 데이터
         const onboardingSteps = [
