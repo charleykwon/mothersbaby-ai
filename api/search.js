@@ -32,8 +32,14 @@ export default async function handler(req, res) {
     // 검색어 처리
     const searchTerm = query ? query.trim().toLowerCase() : '';
     
-    // 키워드 매핑 (검색어 → 관련 키워드) - 우선순위 반영
+    // 키워드 매핑 (검색어 → 관련 키워드)
     const keywordMap = {
+      // 젖 거부/물림 문제
+      '안물': ['젖거부', '거부', '물림거부', '유두혼동', '피부접촉'],
+      '거부': ['젖거부', '거부', '물림거부', '유두혼동', '피부접촉'],
+      '안먹': ['젖거부', '거부', '수유거부', '먹지않음'],
+      '유두혼동': ['유두혼동', '젖병거부', '젖거부', '혼동'],
+      
       // 유두 관련 - 상처/통증 우선
       '유두상처': ['유두상처', '균열', '갈라짐', '출혈', '통증', '원인', '치료', '대처'],
       '유두': ['유두', '균열', '상처', '갈라짐', '통증', '원인'],
@@ -70,6 +76,7 @@ export default async function handler(req, res) {
       '야간': ['야간수유', '밤중수유', '수면', '밤'],
       '수면': ['수면', '야간', '밤', '잠'],
       '밤중': ['밤중수유', '야간수유', '수면'],
+      '깨요': ['야간', '수면', '밤', '깨움', '밤중수유'],
       
       // 직장/복직
       '직장': ['복직', '직장', '유축', '회사', '워킹맘'],
@@ -95,13 +102,12 @@ export default async function handler(req, res) {
 
     // 검색어에서 관련 키워드 추출
     let expandedKeywords = [searchTerm];
-    let priorityKeywords = []; // 우선순위 키워드
+    let priorityKeywords = [];
     
     for (const [key, values] of Object.entries(keywordMap)) {
       if (searchTerm.includes(key)) {
-        // 첫 번째로 매칭된 키워드를 우선순위로
         if (priorityKeywords.length === 0) {
-          priorityKeywords = values.slice(0, 3); // 상위 3개
+          priorityKeywords = values.slice(0, 3);
         }
         expandedKeywords = [...expandedKeywords, ...values];
       }
@@ -138,19 +144,19 @@ export default async function handler(req, res) {
         const content = (item.content || '').toLowerCase();
         const keywords = Array.isArray(item.keywords) ? item.keywords.join(' ').toLowerCase() : '';
 
-        // 정확한 검색어 매칭 (최고 우선순위)
+        // 정확한 검색어 매칭
         if (title.includes(searchTerm)) score += 15;
         if (content.includes(searchTerm)) score += 8;
         if (keywords.includes(searchTerm)) score += 12;
 
-        // 우선순위 키워드 매칭 (높은 점수)
+        // 우선순위 키워드 매칭
         for (const kw of priorityKeywords) {
           if (title.includes(kw)) score += 10;
           if (content.includes(kw)) score += 6;
           if (keywords.includes(kw)) score += 8;
         }
 
-        // 확장 키워드 매칭 (낮은 점수)
+        // 확장 키워드 매칭
         for (const kw of expandedKeywords) {
           if (!priorityKeywords.includes(kw)) {
             if (title.includes(kw)) score += 2;
@@ -163,27 +169,25 @@ export default async function handler(req, res) {
         if (item.urgency === '즉시대응필요') score += 3;
         else if (item.urgency === '24시간내확인') score += 2;
 
-        // "보호기", "사용법" 등이 제목에 있으면 점수 감소 (상처 검색 시)
+        // 특정 검색어에 대한 점수 조정
         if (searchTerm.includes('상처') || searchTerm.includes('균열') || searchTerm.includes('갈라')) {
-          if (title.includes('보호기') || title.includes('사용법')) {
-            score -= 5;
-          }
-          if (title.includes('원인') || title.includes('대처') || title.includes('치료')) {
-            score += 8;
-          }
+          if (title.includes('보호기') || title.includes('사용법')) score -= 5;
+          if (title.includes('원인') || title.includes('대처') || title.includes('치료')) score += 8;
+        }
+        
+        // 젖 거부 검색 시 수면 관련 결과 점수 감소
+        if (searchTerm.includes('안물') || searchTerm.includes('거부')) {
+          if (title.includes('수면') || title.includes('잠') || content.includes('수면 환경')) score -= 10;
+          if (title.includes('거부') || content.includes('젖거부')) score += 10;
         }
 
         return { ...item, score };
       });
 
-      // 점수가 0보다 큰 것만 필터링
       results = results.filter(item => item.score > 0);
-
-      // 점수순 정렬
       results.sort((a, b) => b.score - a.score);
     }
 
-    // 결과 제한
     results = results.slice(0, limit);
 
     return res.status(200).json({
