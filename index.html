@@ -1,1479 +1,683 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>육아 컴패니언 AI - 맞춤형 모유수유 가이드 | 마더스베이비</title>
-    
-    <!-- SEO 메타태그 -->
-    <meta name="description" content="신생아부터 6개월까지, 모유수유 고민을 해결해드려요. 젖양 부족, 젖몸살, 유선염, 수유자세, 복직 준비까지 전문가가 알려주는 맞춤 가이드.">
-    <meta name="keywords" content="모유수유, 육아, 신생아, 젖몸살, 유선염, 수유자세, 젖양부족, 복직준비, 이유식, 단유, 모유수유가이드">
-    <meta name="author" content="마더스베이비 (Mother's Baby)">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://mothersbaby-ai.vercel.app/">
-    
-    <!-- Open Graph (페이스북, 카카오톡 공유) -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="육아 컴패니언 AI - 맞춤형 모유수유 가이드">
-    <meta property="og:description" content="신생아부터 6개월까지, 모유수유 고민을 해결해드려요. 젖양 부족, 젖몸살, 유선염, 수유자세까지 전문가 가이드.">
-    <meta property="og:url" content="https://mothersbaby-ai.vercel.app/">
-    <meta property="og:site_name" content="마더스베이비">
-    <meta property="og:locale" content="ko_KR">
-    <!-- og:image는 실제 이미지 URL로 교체하세요 -->
-    <meta property="og:image" content="https://mothersbaby-ai.vercel.app/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    
-    <!-- 트위터 카드 -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="육아 컴패니언 AI - 맞춤형 모유수유 가이드">
-    <meta name="twitter:description" content="신생아부터 6개월까지, 모유수유 고민을 해결해드려요.">
-    
-    <!-- 네이버 검색 최적화 -->
-    <meta name="naver-site-verification" content="NAVER_VERIFICATION_CODE">
-    
-    <!-- 모바일 앱 메타태그 -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="육아 컴패니언">
-    <meta name="theme-color" content="#5E6B3A">
-    
-    <!-- Google Analytics -->
-    <!-- GA_MEASUREMENT_ID를 실제 ID로 교체하세요 (예: G-XXXXXXXXXX) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
-        
-        // 이벤트 추적 함수
-        function trackEvent(category, action, label) {
-            gtag('event', action, {
-                'event_category': category,
-                'event_label': label
-            });
-        }
-    </script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🤱 육아 컴패니언 AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --mothers-olive: #5E6B3A;
-            --mothers-olive-light: #8A9A5B;
-            --mothers-olive-lighter: #A8B77A;
-            --mothers-olive-bg: #F0F2E8;
-            --mothers-pink: #E8B4B8;
-            --mothers-pink-light: #F5D6D9;
-            --mothers-pink-dark: #D4A5A5;
+            --olive: #5E6B3A;
+            --olive-light: #8A9A5B;
+            --olive-bg: #F0F2E8;
+            --pink: #E8B4B8;
+            --pink-light: #F5D6D9;
             --black-olive: #3D4A2D;
-            --off-white: #F9F7F4;
             --warm-gray: #6B6B6B;
-            --dark-bg: #2A2D26;
-            --dark-surface: #3D4035;
-            --dark-text: #E8E6E3;
+            --urgent-red: #E74C3C;
+            --urgent-orange: #F39C12;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
         body {
-            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--mothers-olive-bg) 0%, #E8EBE0 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Noto Sans KR', sans-serif;
+            min-height: 100%;
             color: var(--black-olive);
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(61, 74, 45, 0.12);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, var(--mothers-olive) 0%, var(--mothers-olive-light) 100%);
-            color: white;
-            padding: 32px 24px;
-            text-align: center;
-            position: relative;
-        }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--mothers-pink);
-        }
-        .logo-symbol {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 12px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-        .header h1 {
-            font-family: 'Noto Serif KR', serif;
-            font-size: 22px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .header p { font-size: 14px; opacity: 0.9; font-weight: 300; }
-        .progress {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0;
             padding: 20px;
-            background: var(--mothers-olive-bg);
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .progress-text {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--mothers-olive);
-            padding: 10px 24px;
+        .page-wrapper {
+            width: 100%;
+            max-width: 480px;
+            min-height: calc(100vh - 40px);
             background: white;
             border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(94, 107, 58, 0.15);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
         }
-        .content { padding: 30px 20px; }
-        .step { display: none; }
-        .step.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        h2 {
-            font-family: 'Noto Serif KR', serif;
-            font-size: 20px;
-            color: var(--mothers-olive);
-            margin-bottom: 24px;
-            text-align: center;
-            font-weight: 500;
-        }
-        .option-btn {
+        .container {
             width: 100%;
+            min-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+        @media (max-width: 500px) {
+            body { padding: 0; background: white; }
+            .page-wrapper { max-width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none; }
+            .container { min-height: 100vh; }
+        }
+        .header {
+            background: linear-gradient(135deg, var(--olive) 0%, var(--olive-light) 100%);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 20px; font-weight: 500; }
+        .header p { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+        .search-bar {
             padding: 16px 20px;
-            margin-bottom: 12px;
+            background: #FAFAFA;
+            border-bottom: 1px solid #eee;
+        }
+        .search-input-wrap {
+            display: flex;
             background: white;
-            border: 2px solid var(--mothers-olive);
-            border-radius: 14px;
+            border: 1px solid #E0E0E0;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        .search-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+        .search-btn {
+            padding: 12px 18px;
+            background: var(--olive);
+            border: none;
+            cursor: pointer;
             font-size: 16px;
-            color: var(--mothers-olive);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-family: 'Noto Sans KR', sans-serif;
         }
-        .option-btn:hover {
-            background: var(--mothers-olive-bg);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 6px 20px rgba(94, 107, 58, 0.25);
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .option-btn:active { transform: translateY(-1px) scale(0.98); }
-        .option-btn.urgent {
-            border-color: var(--mothers-pink-dark);
-            color: #8B5A5A;
-            background: var(--mothers-pink-light);
+        .message { display: flex; flex-direction: column; gap: 12px; }
+        .bubble {
+            background: var(--olive-bg);
+            padding: 16px 18px;
+            border-radius: 20px 20px 20px 6px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--black-olive);
+            animation: fadeIn 0.3s ease;
         }
-        .option-btn.urgent:hover {
-            background: var(--mothers-pink);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 6px 20px rgba(212, 165, 165, 0.4);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .back-btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .category-card {
             background: white;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            color: var(--warm-gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-        .back-btn:hover { background: #f5f5f5; border-color: var(--mothers-olive-light); color: var(--mothers-olive); }
-        .answer-box {
-            background: var(--off-white);
-            padding: 28px;
+            border: 1px solid #E8E8E8;
             border-radius: 16px;
-            line-height: 1.9;
-            white-space: pre-wrap;
-            animation: fadeInUp 0.5s ease-out;
-            border-left: 4px solid var(--mothers-olive);
-            font-size: 15px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .expert-btn {
+        .category-card:hover {
+            border-color: var(--olive);
+            transform: translateY(-2px);
+        }
+        .category-card.urgent {
+            border-color: var(--urgent-red);
+            background: #FFF8F8;
+        }
+        .category-icon { font-size: 28px; margin-bottom: 8px; }
+        .category-title { font-size: 14px; font-weight: 600; }
+        .category-card.urgent .category-title { color: var(--urgent-red); }
+        .category-desc { font-size: 11px; color: var(--warm-gray); margin-top: 4px; }
+        
+        .answer-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .answer-card.urgent {
+            border-left: 4px solid var(--urgent-red);
+            background: #FFFAFA;
+        }
+        .answer-header { display: flex; gap: 8px; margin-bottom: 10px; }
+        .answer-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-urgent { background: var(--urgent-red); color: white; }
+        .badge-warning { background: var(--urgent-orange); color: white; }
+        .badge-normal { background: var(--olive-bg); color: var(--olive); }
+        .answer-title { font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+        .answer-content { font-size: 14px; color: #555; line-height: 1.75; }
+        .answer-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .keyword {
+            padding: 4px 10px;
+            background: var(--olive-bg);
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--olive);
+        }
+        
+        .related-questions { margin-top: 16px; }
+        .related-title { font-size: 13px; color: var(--warm-gray); margin-bottom: 10px; }
+        .related-btn {
             display: block;
             width: 100%;
-            padding: 16px 20px;
-            margin: 20px 0;
-            background: linear-gradient(135deg, var(--mothers-pink) 0%, var(--mothers-pink-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: #FAFAFA;
+            border: 1px solid #E8E8E8;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(232, 180, 184, 0.4);
-            text-decoration: none;
-            text-align: center;
-            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.2s;
         }
-        .expert-btn:hover {
-            background: linear-gradient(135deg, var(--mothers-pink-dark) 0%, #C49999 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(212, 165, 165, 0.5);
-        }
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .theme-toggle:hover { background: rgba(255, 255, 255, 0.3); transform: rotate(20deg) scale(1.1); }
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 9999;
-            background: white;
-            padding: 30px;
+        .related-btn:hover { background: var(--olive-bg); border-color: var(--olive); }
+        .related-btn:active { transform: scale(0.98); }
+        
+        .expert-box {
+            background: linear-gradient(135deg, var(--pink-light) 0%, #FFF0F2 100%);
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
         }
-        .loading-spinner.active { display: block; }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--mothers-olive-bg);
-            border-top: 4px solid var(--mothers-olive);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
+        .expert-box h4 { font-size: 14px; margin-bottom: 10px; }
+        .expert-box a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--olive);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 13px;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .action-buttons { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .expert-name { font-size: 11px; color: var(--warm-gray); margin-top: 8px; }
+        
+        /* 액션 버튼 영역 */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
         .action-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 12px 16px;
-            border: 2px solid var(--mothers-olive);
-            background: white;
-            color: var(--mothers-olive);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 16px;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--black-olive);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background: var(--olive-bg);
+            border-color: var(--olive);
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        .action-btn.expert {
+            background: linear-gradient(135deg, var(--pink-light) 0%, #FFF0F2 100%);
+            border-color: var(--pink);
+            color: #8B4A5E;
+        }
+        .action-btn.expert:hover {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--pink-light) 100%);
+        }
+        .action-btn.back {
+            background: #F5F5F5;
+            color: var(--warm-gray);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
             gap: 6px;
-            font-family: 'Noto Sans KR', sans-serif;
+            padding: 8px 14px;
+            background: #F5F5F5;
+            border: 1px solid #E0E0E0;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--warm-gray);
+            cursor: pointer;
+            margin-bottom: 12px;
         }
-        .action-btn:hover { background: var(--mothers-olive-bg); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(94, 107, 58, 0.2); }
-        .action-btn.active { background: var(--mothers-olive); color: white; }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--black-olive);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .back-btn:hover { background: #EBEBEB; }
+        
+        .footer {
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--warm-gray);
+            background: #FAFAFA;
+            border-top: 1px solid #eee;
         }
-        .toast.show { opacity: 1; }
-        body.dark-mode { background: var(--dark-bg); color: var(--dark-text); }
-        body.dark-mode .container { background: var(--dark-surface); }
-        body.dark-mode .header { background: linear-gradient(135deg, #3D4A2D 0%, #4A5A35 100%); }
-        body.dark-mode .progress { background: #353830; }
-        body.dark-mode .progress-text { background: var(--dark-surface); color: var(--mothers-olive-light); }
-        body.dark-mode h2 { color: var(--mothers-olive-lighter); }
-        body.dark-mode .option-btn { background: var(--dark-surface); border-color: var(--mothers-olive-light); color: var(--mothers-olive-lighter); }
-        body.dark-mode .option-btn:hover { background: #454840; border-color: var(--mothers-olive-lighter); }
-        body.dark-mode .option-btn.urgent { background: #4A3A3A; border-color: var(--mothers-pink); color: var(--mothers-pink-light); }
-        body.dark-mode .answer-box { background: #353830; color: var(--dark-text); border-left-color: var(--mothers-olive-light); }
-        body.dark-mode .back-btn { background: var(--dark-surface); color: var(--mothers-olive-lighter); border-color: var(--mothers-olive-light); }
-        body.dark-mode .action-btn { background: var(--dark-surface); border-color: var(--mothers-olive-light); color: var(--mothers-olive-lighter); }
-        body.dark-mode .action-btn:hover { background: #454840; }
-        body.dark-mode .action-btn.active { background: var(--mothers-olive-light); color: var(--dark-bg); }
-        body.dark-mode .loading-spinner { background: var(--dark-surface); color: var(--dark-text); }
-        @media print {
-            .header, .progress, .back-btn, .expert-btn, .action-buttons, .theme-toggle { display: none !important; }
-            .container { box-shadow: none; max-width: 100%; }
-            .answer-box { background: white !important; color: black !important; border-left: 2px solid #333 !important; }
+        .footer a { color: var(--olive); }
+        
+        .typing { display: flex; gap: 4px; padding: 12px 16px; }
+        .typing span {
+            width: 8px; height: 8px;
+            background: var(--olive);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
         }
-        @media (max-width: 768px) {
-            .header h1 { font-size: 20px; }
-            .option-btn { font-size: 14px; padding: 14px 16px; }
-            .action-buttons { flex-direction: column; }
-            .action-btn { min-width: 100%; }
+        .typing span:nth-child(1) { animation-delay: -0.32s; }
+        .typing span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
         }
     </style>
-    
-    <!-- 구조화된 데이터 (Schema.org) -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "육아 컴패니언 AI",
-        "description": "신생아부터 6개월까지 맞춤형 모유수유 가이드를 제공하는 AI 서비스",
-        "url": "https://mothersbaby-ai.vercel.app/",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "KRW"
-        },
-        "author": {
-            "@type": "Organization",
-            "name": "마더스베이비",
-            "url": "https://mothersbaby.co.kr"
-        },
-        "audience": {
-            "@type": "PeopleAudience",
-            "audienceType": "모유수유 중인 엄마",
-            "suggestedMinAge": "18"
-        }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "젖양이 부족한 것 같아요. 어떻게 해야 하나요?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "신생아 시기에는 폭풍성장기로 인해 젖양이 부족해 보일 수 있습니다. 자주 물리기, 충분한 수분 섭취, 휴식이 중요합니다."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "젖몸살이 생겼어요. 어떻게 해야 하나요?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "젖몸살은 출산 후 3-5일에 흔히 발생합니다. 자주 수유하고, 따뜻한 찜질 후 마사지, 냉찜질로 부기를 가라앉히세요."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "복직해도 모유수유를 계속할 수 있나요?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "네, 가능합니다. 복직 4주 전부터 유축기 준비, 모유 저장, 젖병 적응을 시작하면 복직 후에도 모유수유를 계속할 수 있습니다."
-                }
-            }
-        ]
-    }
-    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner"></div>
-            <p>답변을 불러오는 중...</p>
-        </div>
-        <div class="header">
-            <div class="logo-symbol">🤱</div>
-            <h1>육아 컴패니언 AI</h1>
-            <p>With every moment</p>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-        </div>
-        <div class="progress">
-            <div class="progress-text" id="progressText">Step 1/3</div>
-        </div>
-        <div class="content">
-            <div class="step active" id="step1">
-                <h2>아기가 태어난 지 얼마나 되었나요?</h2>
-                <button class="option-btn" onclick="selectAge('신생아')">🍼 신생아 (0-4주)</button>
-                <button class="option-btn" onclick="selectAge('1-3개월')">👶 1-3개월</button>
-                <button class="option-btn" onclick="selectAge('4-6개월')">🎵 4-6개월</button>
-                <button class="option-btn" onclick="selectAge('6개월 이상')">🦷 6개월 이상</button>
+    <div class="page-wrapper">
+        <div class="container">
+            <header class="header">
+                <h1>🤱 육아 컴패니언 AI</h1>
+                <p>당신의 모유수유 여정을 함께합니다</p>
+            </header>
+            <div class="search-bar">
+                <div class="search-input-wrap">
+                    <input type="text" class="search-input" id="searchInput" placeholder="궁금한 것을 검색하세요...">
+                    <button class="search-btn" onclick="handleSearch()">🔍</button>
+                </div>
             </div>
-            <div class="step" id="step2">
-                <h2>지금 가장 힘든 점은 어떤 쪽인가요?</h2>
-                <div id="topicButtons"></div>
-                <button class="back-btn" onclick="goBack(1)">← 이전으로</button>
-            </div>
-            <div class="step" id="step3">
-                <h2 id="step3Title">아래 중 해당되는 것이 있나요?</h2>
-                <div id="situationButtons"></div>
-                <button class="back-btn" onclick="goBack(2)">← 이전으로</button>
-            </div>
-            <div class="step" id="step4">
-                <div id="answerContent"></div>
-            </div>
+            <div class="chat-area" id="chatArea"></div>
+            <footer class="footer">
+                ⚠️ 의료 상담을 대체하지 않습니다 • <a href="tel:010-7573-2475">전문가 상담</a><br>
+                © 2026 마더스베이비
+            </footer>
         </div>
     </div>
     <script>
-        let currentStep = 1;
-        let selectedAge = '';
-        let selectedTopic = '';
-        let previousStep = 1;
-        let currentAnswerKey = '';
+        const knowledgeUnits = [
+            // ========== 자세/물림 ==========
+            {id:"P01",title:"딥래치(깊은 물림) 확인 방법",chapter:"CHAPTER 7",timeline:"출산직후",urgency:"즉시대응필요",
+            content:"올바른 수유에서 가장 중요한 것은 딥래치(깊은 물림)입니다. 아기가 유두만 무는 것이 아니라 유륜까지 깊게 물어야 해요.\n\n<strong>✅ 올바른 물림 신호</strong>\n• 아기 입이 물고기처럼 크게 벌어짐 (120도 이상)\n• 아기 턱이 유방에 닿아 있음\n• 아래 입술이 바깥으로 말려 있음\n• 코는 유방에서 살짝 떨어져 숨쉬기 편함\n\n<strong>⚠️ 다시 물려야 할 신호</strong>\n• '딸깍' 소리가 남\n• 유두 통증이 수유 내내 지속\n• 수유 후에도 아기가 배고파함\n\n💡 물림이 잘못되면 손가락으로 살짝 풀고 다시 시도하세요.",
+            keywords:["딥래치","깊은물림","유륜","올바른자세"],category:"position"},
+            
+            {id:"P02",title:"교차 요람 자세 (Cross-Cradle Hold)",chapter:"CHAPTER 7",timeline:"첫1주",urgency:"일반정보",
+            content:"초보맘에게 가장 추천하는 수유 자세입니다. 아기 머리를 컨트롤하기 쉬워서 올바른 물림을 잡기 좋아요.\n\n<strong>📋 자세 잡는 방법</strong>\n• 수유할 가슴 반대쪽 손으로 아기 머리 받치기\n• 엄지와 검지로 아기 귀 뒤를 부드럽게 지지\n• 같은 쪽 손으로 유방을 C자로 잡아 지지\n• 아기 배와 엄마 배가 밀착되도록\n\n<strong>✅ 장점</strong>\n• 아기 머리 컨트롤이 쉬움\n• 래치 확인이 용이함\n• 신생아, 작은 아기에게 특히 적합",
+            keywords:["교차요람","수유자세","초보맘","신생아"],category:"position"},
+            
+            {id:"P03",title:"올바른 수유 자세 3단계 확인법",chapter:"CHAPTER 7",timeline:"첫1주",urgency:"일반정보",
+            content:"수유 자세가 올바른지 3단계로 확인하는 방법입니다.\n\n<strong>1단계: 엄마 자세</strong>\n• 등과 허리가 편안하게 지지되어 있나요?\n• 팔이 쿠션이나 베개로 받쳐져 있나요?\n• 어깨에 긴장이 없나요?\n\n<strong>2단계: 아기 위치</strong>\n• 아기의 귀-어깨-엉덩이가 일직선인가요?\n• 아기 배와 엄마 배가 맞닿아 있나요?\n• 아기가 고개를 돌리지 않아도 되는 위치인가요?\n\n<strong>3단계: 물림 확인</strong>\n• 아기 입이 크게 벌어져 있나요?\n• 유륜까지 충분히 물렸나요?\n• 아래 입술이 바깥으로 말려 있나요?\n\n3단계 모두 통과하면 올바른 자세입니다!",
+            keywords:["수유자세","체크리스트","3단계"],category:"position"},
+            
+            {id:"P04",title:"럭비공 자세 (Football Hold)",chapter:"CHAPTER 7",timeline:"첫1주",urgency:"일반정보",
+            content:"제왕절개 후 배 압박이 부담되거나, 큰 유방을 가진 엄마에게 좋은 자세입니다.\n\n<strong>📋 자세 잡는 방법</strong>\n• 아기를 옆구리에 끼듯이 안기\n• 아기 다리는 엄마 등 뒤로 향하게\n• 손바닥으로 아기 머리와 목 받치기\n• 베개로 높이 조절하기\n\n<strong>✅ 이런 분께 추천</strong>\n• 제왕절개 후 (배 압박 없음)\n• 큰 유방을 가진 엄마\n• 쌍둥이 동시 수유 시\n• 사출이 강할 때",
+            keywords:["럭비공","제왕절개","수유자세"],category:"position"},
+
+            // ========== 젖량 고민 ==========
+            {id:"S01",title:"모유량이 충분한지 확인하는 방법",chapter:"CHAPTER 10",timeline:"첫1주",urgency:"24시간내확인",
+            content:"모유량 확인의 가장 확실한 지표는 기저귀와 체중입니다. 젖이 말랑하다고 부족한 게 아니에요.\n\n<strong>📊 기저귀로 확인 (하루 기준)</strong>\n• 생후 1일: 소변 1회, 대변 1회\n• 생후 2일: 소변 2회, 대변 2회\n• 생후 4일 이후: 소변 6회 이상, 대변 3-4회\n\n<strong>⚖️ 체중으로 확인</strong>\n• 생후 3-4일: 출생 체중의 7% 이내 감소는 정상\n• 생후 10-14일: 출생 체중 회복\n• 이후: 하루 20-30g 증가\n\n<strong>🚨 병원 방문 필요</strong>\n• 체중 10% 이상 감소\n• 2주 내 출생 체중 미회복",
+            keywords:["모유량","기저귀","체중증가","충분한지"],category:"supply"},
+            
+            {id:"S02",title:"젖량 늘리는 핵심 원칙",chapter:"CHAPTER 10",timeline:"첫1주",urgency:"일반정보",
+            content:"모유는 '수요-공급' 원칙으로 생산됩니다. 자주 비울수록 더 많이 만들어져요.\n\n<strong>🔑 핵심 원칙</strong>\n• 자주 비울수록 더 많이 생산\n• 유방이 비어있을수록 생산 속도 증가\n• 밤 수유가 특히 중요 (프롤락틴 분비↑)\n\n<strong>📋 실천 방법</strong>\n• 하루 8-12회 수유하기\n• 양쪽 유방 모두 비우기\n• 한 번에 15-20분 충분히 수유\n• 밤수유 건너뛰지 않기\n\n💡 젖량이 자리잡는 데는 보통 4-6주가 걸립니다. 조급해하지 마세요!",
+            keywords:["젖량늘리기","수요공급","밤수유"],category:"supply"},
+            
+            {id:"S03",title:"파워펌핑으로 젖량 늘리기",chapter:"CHAPTER 10",timeline:"2-4주",urgency:"일반정보",
+            content:"파워펌핑은 아기의 성장급증기 수유 패턴을 모방해서 젖량을 늘리는 방법입니다.\n\n<strong>⏱️ 파워펌핑 방법 (1시간)</strong>\n• 20분 유축 → 10분 휴식\n• 10분 유축 → 10분 휴식\n• 10분 유축 → 완료\n\n<strong>📋 실천 팁</strong>\n• 하루 1-2회, 같은 시간에 하기\n• 저녁 시간대가 효과적\n• 3-7일 지속하면 효과 나타남\n• 나오는 양보다 자극이 목적\n\n⚠️ 너무 무리하면 피로해지니 컨디션 보면서 하세요.",
+            keywords:["파워펌핑","젖량늘리기","유축"],category:"supply"},
+
+            // ========== 유두 문제 ==========
+            {id:"N01",title:"편평·함몰 유두 관리법",chapter:"CHAPTER 32",timeline:"임신중",urgency:"24시간내확인",
+            content:"편평유두나 함몰유두가 있어도 대부분 모유수유가 가능합니다. 출산 후 호르몬 변화로 개선되는 경우가 많아요.\n\n<strong>✅ 핵심 포인트</strong>\n• 아기는 유두가 아닌 <strong>유륜을 깊게</strong> 물어야 합니다\n• 수유 전 유두를 자극하면 돌출에 도움이 됩니다\n• C자 잡기로 유륜을 납작하게 만들어 물리세요\n\n<strong>💡 도움되는 도구</strong>\n• 니플쉴드: 일시적 사용 도구로, IBCLC 지도 하에 사용\n• 유두 흡입기: 수유 전 유두 돌출에 도움\n\n임신 중 유두 마사지는 효과가 불확실하니, 출산 후 전략에 집중하세요.",
+            keywords:["편평유두","함몰유두","니플쉴드","깊은물림"],category:"nipple"},
+            
+            {id:"N02",title:"유두 통증 원인과 대처법",chapter:"CHAPTER 8",timeline:"출산직후",urgency:"24시간내확인",
+            content:"수유 초기 약간의 불편함은 있을 수 있지만, 심한 통증은 정상이 아닙니다.\n\n<strong>🔍 통증 원인</strong>\n• 얕은 물림 (가장 흔한 원인)\n• 잘못된 젖 떼기 방법\n• 아기 설소대 단축증\n• 유두 감염(아구창)\n\n<strong>✅ 즉시 할 수 있는 것</strong>\n• 물림 교정 (딥래치 확인)\n• 수유 후 모유 발라 자연 건조\n• 라놀린 크림이나 하이드로겔 패드 사용\n• 덜 아픈 쪽부터 수유 시작\n\n<strong>🚨 병원 방문 필요</strong>\n• 물집, 갈라짐, 출혈이 있을 때\n• 7일 이상 호전 없을 때",
+            keywords:["유두통증","얕은물림","라놀린"],category:"nipple"},
+            
+            {id:"N03",title:"유두 상처·갈라짐 관리",chapter:"CHAPTER 8",timeline:"출산직후",urgency:"24시간내확인",
+            content:"유두에 상처가 있어도 수유를 계속할 수 있습니다. 올바른 관리가 중요해요.\n\n<strong>✅ 상처 관리법</strong>\n• 수유 후 모유를 상처에 바르고 자연 건조\n• 라놀린 크림 또는 하이드로겔 패드 사용\n• 브라 안에 모유 패드가 젖으면 바로 교체\n• 덜 아픈 쪽부터 수유 시작\n\n<strong>💡 심한 갈라짐일 때</strong>\n• 1-2일 정도 해당 쪽은 유축으로 대체\n• 상처 회복 후 다시 직수 시도\n• 물림 자세 반드시 점검하기\n\n상처의 근본 원인은 대부분 얕은 물림입니다!",
+            keywords:["유두상처","갈라짐","관리"],category:"nipple"},
+
+            // ========== 밤수유 ==========
+            {id:"T01",title:"밤수유 언제까지 해야 할까?",chapter:"CHAPTER 15",timeline:"3-6개월",urgency:"일반정보",
+            content:"밤수유는 아기 성장과 엄마 젖량 유지 모두에 중요합니다. 월령에 따라 자연스럽게 줄어들어요.\n\n<strong>📊 월령별 밤수유 기대치</strong>\n• 0-3개월: 2-3회 정상\n• 3-6개월: 1-2회로 점차 감소\n• 6개월 이후: 점진적 줄이기 가능\n\n<strong>💡 알아두세요</strong>\n• 밤에 프롤락틴(젖 생산 호르몬)이 가장 많이 분비됨\n• 무리하게 끊으면 젖량 감소 우려\n• 아기마다 개인차가 큼\n\n통잠을 재우고 싶은 마음은 이해하지만, 아기 신호에 맞춰 천천히 줄여가세요.",
+            keywords:["밤수유","줄이기","통잠"],category:"night"},
+            
+            {id:"T02",title:"밤수유 줄이기 전략",chapter:"CHAPTER 15",timeline:"3-6개월",urgency:"일반정보",
+            content:"밤수유를 줄이려면 낮 시간 전략이 중요합니다.\n\n<strong>🌙 밤수유 줄이기 전략</strong>\n• 낮 수유를 충분히 하기 (4시간 이상 벌리지 않기)\n• 저녁 집중 수유 (탱크업): 자기 전 충분히 먹이기\n• 밤-낮 구분 명확히: 밤엔 조용히, 불 최소화\n• 파트너와 역할 분담: 기저귀, 재우기 등\n\n<strong>⚠️ 주의사항</strong>\n• 배고픔 vs 습관 수유 구분하기\n• 6개월 이전에는 무리하게 끊지 않기\n• 아기가 아프거나 성장급증기엔 유연하게",
+            keywords:["밤수유줄이기","탱크업","낮수유"],category:"night"},
+            
+            {id:"T03",title:"수면 리그레션 대처법",chapter:"CHAPTER 15",timeline:"3-6개월",urgency:"일반정보",
+            content:"잘 자던 아기가 갑자기 자주 깨는 '수면 리그레션'은 뇌 발달로 인한 일시적 현상입니다.\n\n<strong>📅 주로 나타나는 시기</strong>\n• 4개월, 8-10개월, 12개월, 18개월, 24개월\n\n<strong>✅ 대처 방법</strong>\n• 기존 수면 루틴 유지하기\n• 낮잠 시간과 환경 점검\n• 배고픔인지 확인 후 필요시 수유\n• 너무 지치기 전에 재우기\n\n<strong>💡 알아두세요</strong>\n• 보통 2-4주 후 자연스럽게 회복됩니다\n• 이 시기에 새로운 습관을 들이지 않는 게 좋아요\n• 엄마도 충분히 쉬세요!",
+            keywords:["수면리그레션","통잠","밤수유"],category:"night"},
+
+            // ========== 복직 준비 ==========
+            {id:"W01",title:"복직 준비 타임라인",chapter:"CHAPTER 20",timeline:"3-6개월",urgency:"계획수립용",
+            content:"복직 2-4주 전부터 체계적으로 준비하면 모유수유를 이어갈 수 있습니다.\n\n<strong>📅 D-4주</strong>\n• 유축기 선택 및 사용 연습\n• 모유 보관 용기 준비\n• 냉동 모유 비축 시작 (목표: 3-5일분)\n\n<strong>📅 D-2주</strong>\n• 젖병 수유 연습 (다른 사람이 주기)\n• 어린이집/육아 도우미 적응 시작\n• 유축 루틴 연습\n\n<strong>📅 D-1주</strong>\n• 실제 스케줄대로 리허설\n• 보냉백, 아이스팩 테스트\n• 회사 유축 공간 확인",
+            keywords:["복직","타임라인","유축","준비"],category:"work"},
+            
+            {id:"W02",title:"모유 보관 334 규칙",chapter:"CHAPTER 20",timeline:"3-6개월",urgency:"24시간내확인",
+            content:"모유 보관의 기본 원칙은 '334 규칙'입니다. 꼭 기억하세요!\n\n<strong>🌡️ 334 규칙</strong>\n• 실온 (25℃ 이하): <strong>3시간</strong>\n• 냉장 (4℃): <strong>3일</strong>\n• 냉동 (-18℃): <strong>6개월</strong> (권장 3개월)\n\n<strong>📋 보관 팁</strong>\n• 날짜 라벨 필수로 붙이기\n• 소량(60-120ml)씩 나눠서 보관\n• 냉장고 안쪽에 보관 (문 쪽은 온도 변화 큼)\n\n<strong>🔄 해동 방법</strong>\n• 냉장 해동 (8-12시간) 또는 흐르는 미지근한 물\n• 전자레인지 절대 금지!\n• 해동 후 24시간 내 사용",
+            keywords:["모유보관","334규칙","냉동모유","해동"],category:"work"},
+            
+            {id:"W03",title:"직장에서 유축 루틴",chapter:"CHAPTER 20",timeline:"3-6개월",urgency:"일반정보",
+            content:"복직 후에도 젖량을 유지하려면 규칙적인 유축이 중요합니다.\n\n<strong>⏰ 유축 스케줄</strong>\n• 3시간마다 유축 (하루 2-3회)\n• 점심시간 + 오전/오후 각 1회\n• 한 번에 15-20분씩\n\n<strong>📋 준비물</strong>\n• 전동 유축기 (양쪽 동시 가능하면 시간 절약)\n• 보냉백 + 아이스팩\n• 모유 저장팩 또는 병\n• 유축기 세척 도구\n\n<strong>💡 팁</strong>\n• 출퇴근 시 직수로 연결감 유지\n• 주말은 직수 중심으로\n• 스트레스 받으면 양이 줄 수 있으니 여유롭게",
+            keywords:["유축","직장","복직","젖량유지"],category:"work"},
+
+            // ========== 단유 ==========
+            {id:"D01",title:"점진적 단유 방법",chapter:"CHAPTER 25",timeline:"12개월이상",urgency:"계획수립용",
+            content:"2-4주에 걸쳐 천천히 줄여가는 것이 엄마 몸과 아기 마음 모두에 좋습니다.\n\n<strong>📅 단유 스케줄 예시 (4주)</strong>\n• 1주차: 가장 덜 중요한 수유 1회 제거\n• 2주차: 추가로 1회 제거\n• 3주차: 낮 수유 모두 제거\n• 4주차: 아침/저녁만 → 완전 단유\n\n<strong>💡 단유 시 젖 관리</strong>\n• 불편할 때만 살짝 짜기 (완전히 비우지 않기)\n• 냉찜질로 불편감 완화\n• 꽉 조이는 브라 대신 편한 스포츠브라\n\n<strong>❤️ 마음 챙기기</strong>\n• 호르몬 변화로 우울감이 올 수 있어요\n• 죄책감 느끼지 않아도 됩니다\n• 새로운 방식으로 아기와 교감하세요",
+            keywords:["단유","점진적","젖말리기"],category:"weaning"},
+            
+            {id:"D02",title:"단유 시 젖 관리와 불편감 해소",chapter:"CHAPTER 25",timeline:"12개월이상",urgency:"일반정보",
+            content:"단유 과정에서 가슴이 불편할 수 있습니다. 올바른 관리법을 알아두세요.\n\n<strong>✅ 젖 관리 원칙</strong>\n• 불편할 때만 압력을 줄일 정도로 살짝 짜기\n• 완전히 비우면 계속 생산되므로 주의\n• 점점 짜는 양과 횟수 줄이기\n\n<strong>💡 불편감 완화 방법</strong>\n• 냉찜질 (양배추 잎도 효과적)\n• 타이레놀 등 진통제 복용 가능\n• 꽉 조이지 않는 편한 브라 착용\n• 샤워 시 따뜻한 물이 닿으면 사출될 수 있으니 주의\n\n보통 1-2주면 불편감이 많이 줄어듭니다.",
+            keywords:["단유","젖관리","불편감"],category:"weaning"},
+
+            // ========== 특수 상황 ==========
+            {id:"X01",title:"쌍둥이 모유수유",chapter:"CHAPTER 30",timeline:"출산직후",urgency:"일반정보",
+            content:"쌍둥이도 완전 모유수유가 가능합니다. 젖은 수요만큼 생산되니까요!\n\n<strong>🍼 수유 방법</strong>\n• 동시 수유: 럭비공 자세로 양쪽에 한 명씩\n• 번갈아 수유: 한 명씩 따로 수유\n• 혼합: 상황에 따라 유연하게\n\n<strong>💡 실용적인 팁</strong>\n• 수유 쿠션(쌍둥이용) 활용하기\n• 누가 어느 쪽을 먹었는지 기록하기\n• 한 명이 잘 못 빨면 그 쪽을 더 자주 수유\n\n<strong>❤️ 엄마 건강</strong>\n• 수분과 영양 섭취 충분히\n• 도움 요청하기 (쌍둥이는 팀플레이!)\n• 완벽하지 않아도 괜찮아요",
+            keywords:["쌍둥이","동시수유","완모"],category:"special"},
+            
+            {id:"X02",title:"조산아 모유수유",chapter:"CHAPTER 30",timeline:"출산직후",urgency:"24시간내확인",
+            content:"조산아에게 모유는 더욱 중요합니다. 면역력과 발달에 큰 도움이 돼요.\n\n<strong>🏥 NICU에서</strong>\n• 출산 후 가능한 빨리 유축 시작 (6시간 이내)\n• 2-3시간마다 유축으로 젖량 확보\n• 소량이라도 초유는 매우 귀중해요\n\n<strong>👶 아기와의 접촉</strong>\n• 캥거루케어(피부접촉) 적극적으로\n• 직수 전환은 아기 상태 보며 천천히\n• NICU 담당 간호사와 상의하기\n\n<strong>💡 알아두세요</strong>\n• 조산아용 모유는 성분이 달라요 (아기에게 맞춤!)\n• 젖량이 적어도 포기하지 마세요\n• IBCLC 상담을 적극 활용하세요",
+            keywords:["조산아","NICU","캥거루케어"],category:"special"},
+
+            // ========== 긴급 상황 ==========
+            {id:"U01",title:"유선염 응급 대처법",chapter:"CHAPTER 30",timeline:"2-4주",urgency:"즉시대응필요",
+            content:"<strong>38℃ 이상 고열</strong>과 <strong>유방의 붉은 반점</strong>이 있다면 유선염을 의심하세요.\n\n<strong>🚨 유선염 증상</strong>\n• 38℃ 이상 고열, 오한, 몸살 기운\n• 유방에 붉고 뜨거운 부분\n• 심한 통증과 부기\n\n<strong>⚡ 즉시 해야 할 것</strong>\n• <strong>수유 중단하지 말기!</strong> 계속 비워야 합니다\n• 아픈 쪽부터 먼저 수유\n• 따뜻한 찜질 후 수유\n• 충분한 휴식과 수분 섭취\n\n<strong>🏥 병원 방문</strong>\n• 12-24시간 내 호전 없으면 병원 가세요\n• 항생제가 필요할 수 있어요 (수유 가능한 약 처방)\n\n⚠️ 갑자기 수유를 중단하면 오히려 악화됩니다!",
+            keywords:["유선염","고열","응급"],category:"urgent"},
+            
+            {id:"U02",title:"아기 탈수 신호 체크",chapter:"CHAPTER 31",timeline:"첫1주",urgency:"즉시대응필요",
+            content:"신생아 탈수는 빠른 발견이 중요합니다. 다음 신호를 확인하세요.\n\n<strong>🚨 탈수 경고 신호</strong>\n• 6시간 이상 소변이 없음\n• 소변 색이 진한 노란색/오렌지색\n• 입술과 입안이 마름\n• 울어도 눈물이 나지 않음\n• 대천문(숨구멍)이 움푹 들어감\n• 평소보다 많이 처지거나 심하게 보챔\n\n<strong>⚡ 즉시 해야 할 것</strong>\n• 수유 횟수 늘리기 (깨워서라도 먹이기)\n• 체중 확인하기\n\n<strong>🏥 응급실 방문</strong>\n• 8시간 이상 소변 없음\n• 열이 38℃ 이상\n• 먹지 않으려 함",
+            keywords:["탈수","소변","응급","신생아"],category:"urgent"},
+            
+            {id:"U03",title:"젖몸살(유방울혈) 응급 대처",chapter:"CHAPTER 30",timeline:"출산직후",urgency:"즉시대응필요",
+            content:"유방이 돌처럼 딱딱하고 아프다면 젖몸살(유방울혈)입니다.\n\n<strong>🚨 젖몸살 증상</strong>\n• 유방이 딱딱하고 팽팽함\n• 심한 통증과 열감\n• 유륜까지 부어서 아기가 물기 어려움\n\n<strong>⚡ 응급 대처법</strong>\n• 수유 전: 따뜻한 찜질 + 가볍게 마사지\n• 역압 마사지: 유륜 주변을 부드럽게 눌러 부기 빼기\n• 자주 수유 (2-3시간마다)\n• 수유 후: 냉찜질로 부기 완화\n\n<strong>💡 예방법</strong>\n• 초기에 자주 수유하기\n• 한쪽만 먹이지 말고 양쪽 번갈아\n• 꽉 끼는 브라 피하기",
+            keywords:["젖몸살","유방울혈","응급"],category:"urgent"},
+            
+            {id:"U04",title:"긴급 단유 시 가슴 관리",chapter:"CHAPTER 28",timeline:"2-4주",urgency:"즉시대응필요",
+            content:"건강 문제 등으로 갑자기 단유해야 할 때의 가슴 관리법입니다.\n\n<strong>📅 1일차 (가장 힘든 날)</strong>\n• 냉찜질 20분 × 하루 6회 (양배추 잎 또는 아이스팩)\n• 유축 금지 (공급 신호를 보내지 않기 위해)\n• 타이레놀 등 진통제 복용\n• 꽉 조이는 스포츠브라 24시간 착용\n\n<strong>📅 2일차 (고비)</strong>\n• 너무 팽팽하면 손으로 소량만 짜기 (30ml 정도)\n• 냉찜질 계속\n• 수분 섭취 줄이지 않기 (탈수 위험)\n\n<strong>📅 3일차 이후</strong>\n• 점차 호전 시작\n• 1-2주면 대부분 안정됨\n\n⚠️ 미열(37.5-38도)은 정상 반응이에요.",
+            keywords:["긴급단유","가슴관리","응급"],category:"urgent"}
+        ];
         
-        const topicsByAge = {
-            '신생아': [
-                { text: '🌟 초유는 언제까지?', topic: '초유' },
-                { text: '🤱 젖물림/자세', topic: '젖물림/자세' },
-                { text: '💧 젖양 걱정', topic: '젖양 걱정' },
-                { text: '🩹 가슴 통증/염증', topic: '가슴 통증/염증' },
-                { text: '👶 아기 상태', topic: '아기 상태' }
-            ],
-            '1-3개월': [
-                { text: '🤱 젖물림/자세', topic: '젖물림/자세' },
-                { text: '💧 젖양 걱정 / 폭풍성장기', topic: '젖양 걱정_1-3개월' },
-                { text: '🩹 가슴 통증/염증', topic: '가슴 통증/염증' },
-                { text: '⚖️ 아기 체중/수유량', topic: '아기 체중/수유량' },
-                { text: '🌙 밤수유/기타', topic: '밤수유/기타' }
-            ],
-            '4-6개월': [
-                { text: '💧 젖양 걱정', topic: '젖양 걱정' },
-                { text: '⚖️ 아기 체중/수유량', topic: '아기 체중/수유량' },
-                { text: '🥄 이유식 시작', topic: '이유식 시작' },
-                { text: '🌙 밤수유/기타', topic: '밤수유/기타' }
-            ],
-            '6개월 이상': [
-                { text: '🥘 이유식과 수유 병행', topic: '이유식 병행' },
-                { text: '💼 복직/유축', topic: '복직/유축' },
-                { text: '🌙 밤수유', topic: '밤수유' },
-                { text: '💬 기타', topic: '기타' }
-            ]
-        };
+        const tagDictionary = [
+            {name:"딥래치",synonyms:["깊은물림","deep latch"]},
+            {name:"유선염",synonyms:["mastitis","유방염"]},
+            {name:"함몰유두",synonyms:["inverted nipple"]},
+            {name:"편평유두",synonyms:["flat nipple"]},
+            {name:"탈수",synonyms:["dehydration"]},
+            {name:"밤수유",synonyms:["야간수유"]},
+            {name:"복직",synonyms:["return to work"]},
+            {name:"유축",synonyms:["펌핑","pumping"]},
+            {name:"단유",synonyms:["weaning","젖떼기"]},
+            {name:"젖몸살",synonyms:["울혈","engorgement"]},
+            {name:"니플쉴드",synonyms:["유두보호기","nipple shield"]},
+            {name:"파워펌핑",synonyms:["power pumping"]},
+            {name:"수면리그레션",synonyms:["sleep regression"]},
+            {name:"334",synonyms:["모유보관"]}
+        ];
         
-        const situations = {
-            '초유': [],
-            '젖물림/자세': [
-                { text: '젖물림이 안 돼요', answer: '수유자세' },
-                { text: '수유 자세가 불편해요', answer: '수유자세' },
-                { text: '젖병 주니까 엄마 젖 거부해요 (유두혼란)', answer: '유두혼란' }
-            ],
-            '젖양 걱정': [
-                { text: '젖이 너무 적게 나와요', answer: '젖량부족' },
-                { text: '젖이 너무 많이 나와요', answer: '젖량과다' },
-                { text: '한쪽만 잘 안 나와요', answer: '한쪽' }
-            ],
-            '젖양 걱정_1-3개월': [
-                { text: '갑자기 계속 배고파해요 (폭풍성장기)', answer: '젖량부족' },
-                { text: '젖이 너무 적게 나와요', answer: '젖량부족' },
-                { text: '한쪽만 잘 안 나와요', answer: '한쪽' },
-                { text: '갑자기 젖양이 줄었어요', answer: '젖량부족' }
-            ],
-            '가슴 통증/염증': [
-                { text: '38도 이상 발열', answer: '발열', urgent: true },
-                { text: '가슴이 심하게 붓고 열감', answer: '유선염', urgent: true },
-                { text: '젖몸살이 왔어요', answer: '젖몸살' }
-            ],
-            '아기 상태': [{ text: '아기가 너무 자요', answer: '아기자요' }],
-            '아기 체중/수유량': [
-                { text: '체중이 잘 안 늘어요', answer: '체중증가' },
-                { text: '아기가 너무 자요', answer: '아기자요' }
-            ],
-            '복직/유축': [
-                { text: '복직 준비 방법', answer: '복직준비' },
-                { text: '유축 방법/시간', answer: '유축시간' },
-                { text: '모유 보관/해동', answer: '모유보관' }
-            ],
-            '밤수유/기타': [
-                { text: '밤수유가 힘들어요', answer: '밤수유' },
-                { text: '단유를 하고 싶어요', answer: '단유' }
-            ],
-            '이유식 시작': [{ text: '이유식 언제 시작하나요?', answer: '이유식시작' }],
-            '기타': [
-                { text: '젖 말리는 방법', answer: '젖말리기' },
-                { text: '약 먹어도 수유해도 되나요?', answer: '약물수유' },
-                { text: '음식/카페인 섭취', answer: '음식카페인' }
-            ]
-        };
-
-        const answers = {
-            '초유': `초유는 아기에게 최고의 선물! 🌟
-
-🍯 초유란?
-출산 후 처음 나오는 진한 노란색 젖이에요.
-완전한 모유가 나오기 전, 아기를 위한 특별한 영양제예요!
-
-📅 기간: 출산 후 2-5일
-• 1-3일: 진한 노란색
-• 4-5일: 점점 희어짐
-• 5일 후: 성숙 모유로 전환
-
-💛 초유의 특징:
-• 색깔: 진한 노란색/주황색 (정상!)
-• 농도: 아주 진하고 걸쭉함
-• 양: 매우 적음 (첫날 5-7ml)
-
-🌟 초유가 특별한 이유:
-1. 면역력 최고! - 항체 가득, 감염 예방
-2. 완벽한 영양 - 단백질 3배, 비타민 A
-3. 소화 잘 됨 - 신생아 위에 딱 맞음
-
-✅ "충분할까요?" 걱정 마세요!
-첫날 5-7ml면 충분해요.
-신생아 위 크기가 체리만 해요!
-
-💡 초유 수유 Tip:
-• 출산 후 1시간 내 시작
-• 하루 8-12회 자주 물리기
-• 양쪽 다 수유
-• 인내심 가지기
-
-💚 Remember:
-초유는 소량이지만 완벽해요!
-자주 물리는 게 핵심! 하루 8-12회 목표! 🎯`,
-
-            '젖량부족': `젖량을 늘리고 싶으시군요! 💧
-
-🤔 정말 부족한가요?
-
-폭풍성장기일 수도:
-• 2-3주, 6주, 3개월, 6개월
-• 갑자기 계속 배고파함
-• 2-3일간 집중 수유로 해결!
-
-진짜 부족 신호:
-❌ 소변 6회 미만
-❌ 체중 증가 없음
-❌ 아기 기운 없음
-
-✅ 확실한 방법:
-
-1. 자주 수유 🍼
-• 하루 8-12회
-• 한 번에 15-20분
-• 밤수유 꼭!
-
-2. 올바른 젖 물림 🤱
-• 유륜 전체를 깊게
-
-3. 휴식 & 영양 😴
-• 수면 6-7시간
-• 수분 2-3L
-
-4. 유축 추가 🶾
-• 수유 후 10-15분
-
-💡 밤수유가 중요해요!
-• 새벽 2-6시 프롤락틴 최고조
-• 젖량 유지의 핵심
-
-💚 Remember:
-폭풍성장기는 정상!
-자주 수유 = 해결책! 💪`,
-
-            '젖량과다': `젖이 너무 많이 나오시는군요! 💦
-
-📍 젖량과다 증상:
-• 젖이 분수처럼 분출
-• 아기가 사레 들림
-• 가슴이 항상 딱딱함
-
-✅ 해결 방법:
-
-1. 블록피딩 🍼
-• 2-3시간 동안 한쪽만 수유
-• 반대편은 유축 안 함
-• 1-2주 지속
-
-2. 눕혀서 수유 🛏️
-• 엄마가 반쯤 누워서
-• 아기를 엄마 위로
-
-3. 수유 전 조금 짜기 💧
-• 1-2분만 가볍게
-
-4. 차가운 찜질 ❄️
-• 수유 후 10-15분
-
-⚠️ 절대 하지 마세요!
-❌ 양쪽 완전히 비우기
-❌ 자주 유축
-❌ 갑자기 수유 중단
-
-💚 긍정적으로 보기:
-젖이 잘 나온다는 증거예요!
-3-4개월 후 자연스럽게 균형 잡혀요! 💪`,
-
-            '한쪽': `한쪽 가슴만 젖이 잘 안 나오시는군요. 😓
-
-이건 꽤 흔한 일이에요!
-
-📍 왜 그럴까요?
-• 선천적 차이 (가장 흔함)
-• 사용 습관 (한쪽만 자주)
-• 아기 선호
-
-✅ 해결 방법:
-
-1. 약한 쪽 먼저! 🍼
-• 매 수유마다 약한 쪽부터
-• 10-15분 충분히
-
-2. 추가 자극 (유축) 💆
-• 수유 후 약한 쪽만
-• 하루 2-3회
-
-3. 마사지 🫳
-• 수유 전 따뜻한 찜질
-• 부드러운 마사지
-
-💡 현실적 목표:
-• 70-80% 정도면 충분!
-• 완벽한 균형은 어려워요
-• 합계가 충분하면 OK
-
-💚 Remember:
-완벽한 대칭은 드물어요!
-중요한 건 아기가 잘 자라는가? 💪`,
-
-            '발열': `🚨 38도 이상 고열! 즉시 대응 필요!
-
-🏥 즉시 병원 가야!
-
-🚨 이런 경우 응급:
-✅ 12시간 이상 38도 이상
-✅ 39도 이상 고열
-✅ 가슴 빨갛게 부어오름
-✅ 오한, 근육통
-
-💊 응급 처치 (병원 가기 전):
-
-1. 해열제 복용 🌡️
-• 타이레놀 (수유 중 OK)
-• 이부프로펜도 안전
-⚠️ 아스피린은 NO!
-
-2. 계속 수유! 🍼
-• 수유 중단 X
-• 2시간마다 수유
-• 아기에게 전염 X
-
-3. 휴식과 수분 💧
-• 침대에서 쉬기
-• 하루 3L 물
-
-🚨 Remember:
-고열은 긴급 상황!
-12시간 이상 38도면 반드시 병원! 💪`,
-
-            '젖몸살': `젖몸살로 불편하시죠 😢
-
-📍 젖몸살이란?
-가슴에 젖이 차서 딱딱하고 붓고 아픈 상태
-
-🚨 24시간 내 대처가 중요!
-방치하면 → 유방염으로 악화!
-
-✅ 즉시 할 일:
-
-1. 자주 수유! 🍼
-• 2시간마다
-• 완전히 비우기
-
-2. 따뜻한 찜질 🌡️
-• 수유 전 5-10분
-
-3. 부드러운 마사지 💆
-• 겨드랑이→유두 방향
-
-4. 차가운 찜질 ❄️
-• 수유 후 10-15분
-
-5. 진통제 💊
-• 타이레놀/이부프로펜
-
-⚠️ 병원 가야:
-• 38도 이상 발열
-• 빨갛게 부어오름
-• 48시간 지나도 안 나음
-
-💚 Remember:
-자주 수유 + 찜질 + 휴식 = 해결! 💪`,
-
-            '수유자세': `수유 자세와 젖 물림! 🤱
-
-🎯 올바른 젖 물림이 가장 중요!
-
-✅ 올바른 젖 물림 방법:
-
-1단계: 아기 자세
-• 아기 몸 전체가 엄마 쪽으로
-• 귀-어깨-엉덩이 일직선
-
-2단계: 입 크게 벌리기
-• 유두로 입술 건드리기
-• "아~" 하는 느낌으로
-
-3단계: 깊게 물리기
-• 유두만 X, 유륜 전체를 깊게 ✅
-• 아래쪽 유륜이 더 많이
-
-4단계: 확인
-✅ 통증 없음
-✅ 꿀꺽꿀꺽 삼키는 소리
-✅ 뺨이 둥글게
-
-📍 4가지 주요 자세:
-1. 교차 요람 - 신생아에게 최고
-2. 요람 자세 - 가장 편함
-3. 풋볼 홀드 - 제왕절개에 좋음
-4. 누워서 수유 - 밤수유에 좋음
-
-💚 Remember:
-올바른 젖 물림 = 성공의 핵심!
-며칠이면 익숙해져요! 💪`,
-
-            '유두혼란': `유두 혼란이 걱정되시는군요! 👶🍼
-
-📍 유두 혼란이란?
-아기가 젖병과 엄마 젖을 혼동하는 상태
-
-증상:
-• 갑자기 엄마 젖 거부
-• 젖병만 찾음
-• 입을 크게 안 벌림
-
-⚠️ 고위험 시기: 생후 4-6주
-
-✅ 예방 방법:
-
-1. 생후 4-6주는 젖병 피하기
-2. 올바른 젖병 선택
-• 신생아용 (느린 속도)
-3. 페이스 피딩
-• 아기 세워서 천천히
-
-✅ 이미 생긴 경우:
-
-1. 젖병 중단 (2-3일)
-2. 피부 접촉 강화
-3. 배고플 때 (졸릴 때) 시도
-4. 다양한 자세 시도
-
-💡 대안 수유: 컵, 스푼, 손가락
-
-💚 Remember:
-유두 혼란은 일시적!
-인내심 + 피부 접촉 = 해결! 💪`,
-
-            '유선염': `🚨 유선염 의심! 즉시 병원!
-
-⚠️ 젖몸살 vs 유선염:
-
-젖몸살: 양쪽 부음, 미열, 24시간 내 호전
-유선염: 한쪽만, 38도 이상, 빨갛게 부음
-
-📍 유선염 증상:
-✅ 한쪽 빨갛게 부음
-✅ 38도 이상 발열
-✅ 극심한 통증
-✅ 오한, 피로감
-
-🏥 즉시 병원!
-→ 항생제 필요!
-
-💊 병원 치료:
-• 항생제 10-14일 복용
-• 증상 좋아져도 끝까지!
-
-💡 집에서 할 일:
-1. 계속 수유! (아픈 쪽부터)
-2. 충분한 휴식
-3. 수분 3L 이상
-4. 찜질
-
-⚠️ 농양 주의!
-덩어리 계속 커지면 재진료!
-
-💚 Remember:
-빨간 부위 + 고열 = 즉시 병원!
-항생제 꼭 끝까지! 💪`,
-
-            '아기자요': `아기가 너무 많이 자서 걱정이시군요 😴
-
-⏰ 정상 수면:
-• 신생아: 16-20시간
-• 2-4주: 15-18시간
-
-🚨 신생아는 3-4시간 이상 자면 깨우기!
-
-👶 깨우는 방법:
-• 기저귀 갈기
-• 옷 벗기기
-• 발바닥 간지럽히기
-
-⚠️ 즉시 소아과:
-• 깨워도 반응 없음
-• 먹으려 안 함
-• 소변 6회 미만
-
-✅ 체크리스트:
-□ 하루 8-12회 수유
-□ 소변 6회 이상
-□ 주당 150-200g 증가
-
-→ 전부 OK면 괜찮아요!`,
-
-            '체중증가': `아기 체중이 걱정되시는군요 😓
-
-📊 정상 체중 증가:
-• 0-3개월: 주당 150-200g
-• 3-6개월: 주당 100-150g
-
-✅ 충분히 먹는지 확인:
-• 소변 하루 6회 이상
-• 수유 후 만족스러움
-• 피부 촉촉하고 탄력
-
-⚠️ 문제 신호:
-❌ 주당 100g 미만
-❌ 소변 6회 미만
-
-💡 대처:
-1. 수유 횟수 늘리기 (8-12회)
-2. 젖 물림 확인
-3. 밤수유 유지
-
-📞 상담: 010-7573-2475`,
-
-            '밤수유': `밤수유가 힘드시죠... 😴
-
-🌙 왜 필요할까요?
-• 새벽 2-6시 프롤락틴 최고조
-• 젖량 유지에 필수
-
-⏰ 월령별 횟수:
-• 신생아: 밤 3-4회
-• 1-3개월: 밤 2-3회
-• 4-6개월: 밤 1-2회
-
-💡 편하게 하는 방법:
-1. 침대 옆 아기침대
-2. 조명 최소화
-3. 대화 최소화
-4. 누워서 수유
-
-📉 준비되면 서서히 줄이기:
-✅ 체중 6kg 이상
-✅ 낮에 충분히 먹음
-
-💚 이 시기는 지나갑니다! 💪`,
-
-            '모유보관': `모유 보관 방법! 🶾
-
-❄️ 보관 기간:
-• 실온: 4시간
-• 냉장: 4일
-• 냉동: 6개월
-
-📦 보관 팁:
-• 모유 전용 팩 사용
-• 날짜 표기
-• 60-120ml씩 소분
-
-🔥 해동 방법:
-✅ 냉장에서 천천히
-✅ 따뜻한 물에 담그기
-❌ 전자레인지 X
-❌ 끓는 물 X
-
-💡 모유 분리는 정상!
-살살 흔들어 섞기
-
-📞 상담: 010-7573-2475`,
-
-            '단유': `단유를 고민 중이시군요. 🤱💔
-
-✅ 단유 방법:
-
-1. 자연 단유 (최고!)
-• 아기가 스스로 줄임
-• 몇 개월 걸림
-
-2. 점진적 단유 (추천!)
-• 2-4주에 걸쳐
-• 하루 1회씩 줄이기
-
-3. 부분 단유
-• 아침/저녁만 유지
-
-💡 수유 줄이는 방법:
-• 대체 활동 (책, 놀이)
-• 시간 줄이기
-• "나중에" 기법
-
-⚠️ 절대 안 되는 것:
-❌ 갑자기 중단
-❌ 아기와 분리
-
-🤱 엄마 케어:
-• 조금씩만 짜기
-• 차가운 찜질
-• 슬픔은 정상이에요
-
-💚 Remember:
-단유는 새로운 시작이에요!
-천천히, 부드럽게! 💕`,
-
-            '유두상처': `유두에 상처가 났군요 😢
-
-📍 원인: 대부분 잘못된 젖 물림
-
-✅ 대처 방법:
-1. 젖 물림 교정 (가장 중요!)
-2. 모유 바르고 말리기
-3. 유두 보호기 (임시)
-4. 공기 접촉
-
-⚠️ 병원 가야:
-• 2주 이상 안 나음
-• 고름, 출혈
-
-📞 상담: 010-7573-2475`,
-
-            '복직준비': `복직해도 모유수유 계속할 수 있어요! 💼
-
-복직 준비, 막막하시죠? 미리 준비하면 충분히 가능해요!
-
-📅 복직 4주 전부터 준비하세요
-
-✅ 1단계: 유축기 선택 (복직 4주 전)
-• 전동 더블 유축기 추천 (시간 절약!)
-• 회사용 / 집용 따로 있으면 편해요
-• 유축기 깔때기 사이즈 꼭 확인!
-  → 유두 직경 + 2-3mm가 적당
-
-✅ 2단계: 모유 저장 시작 (복직 3주 전)
-• 하루 1회 유축으로 비축 시작
-• 목표: 3-5일치 (약 15-20팩)
-• 아침 수유 후가 가장 잘 나와요!
-
-✅ 3단계: 젖병 적응 (복직 2주 전)
-• 엄마 말고 다른 사람이 먹이기
-• 하루 1회부터 시작
-• 처음엔 거부해도 정상이에요
-
-💼 복직 후 유축 스케줄
-
-8시간 근무 기준:
-• 오전 1회 (10-11시)
-• 점심 1회 (12-1시)
-• 오후 1회 (3-4시)
-→ 총 2-3회, 한 번에 15-20분
-
-⏰ 유축 시간 확보 팁:
-• 수유실/휴게실 미리 확인
-• 상사에게 미리 말씀드리기
-• 법적으로 수유 시간 보장됨! (1일 2회, 각 30분)
-
-🧊 회사에서 모유 보관
-
-• 유축 직후 → 아이스팩 + 보냉백
-• 회사 냉장고 있으면 냉장 보관
-• 퇴근 시 보냉백으로 이동
-
-🏠 퇴근 후 젖양 유지법
-
-• 퇴근하면 바로 직수!
-• 밤수유 가능하면 유지 (젖양 유지에 최고)
-• 주말엔 직수 위주로
-
-⚠️ 주의사항
-• 갑자기 유축 횟수 줄이면 젖몸살 위험
-• 스트레스받으면 젖양 줄어요 → 너무 완벽하려 하지 마세요
-• 냉동 모유 해동: 냉장실에서 천천히
-
-💚 복직 = 단유가 아니에요!
-많은 엄마들이 복직 후에도 6개월, 1년 넘게 모유수유해요.
-할 수 있는 만큼만 해도 충분해요! 💪`,
-
-            '유축시간': `유축, 어렵지 않아요! 🍼
-
-유축이 처음이시거나 잘 안 되시나요? 핵심만 알려드릴게요!
-
-⏰ 유축 시간과 횟수
-
-기본 원칙:
-• 한 번에 15-20분 (양쪽 합계)
-• 더블 유축기: 15분이면 충분
-• 싱글 유축기: 한쪽당 10-15분
-
-하루 유축 횟수:
-• 젖양 늘리고 싶을 때: 8-10회
-• 젖양 유지할 때: 6-8회
-• 복직 후 직장에서: 2-3회
-
-💡 유축 잘 되는 비결
-
-1️⃣ 마사지부터!
-• 유축 전 2-3분 가슴 마사지
-• 따뜻한 수건 올려두면 더 좋아요
-• 유륜 주변을 부드럽게 원 그리기
-
-2️⃣ 마음 편하게
-• 아기 사진이나 영상 보기
-• 아기 냄새 나는 옷 가까이 두기
-• 조용하고 편안한 공간에서
-
-3️⃣ 올바른 자세
-• 약간 앞으로 기울이기
-• 어깨 힘 빼기
-• 유축기 깔때기가 유두 중앙에 오도록
-
-📊 유축량, 이 정도면 정상!
-
-• 양쪽 합쳐서 60-120ml (1회 기준)
-• 아침이 가장 많이 나와요!
-• 저녁에 적게 나오는 건 정상
-
-⚠️ 시간대별 차이:
-• 아침 (6-9시): 최대 유축량
-• 오후 (3-6시): 조금 줄어듦
-• 저녁 (9시 이후): 가장 적음 → 정상!
-
-❌ 유축 시 주의사항
-
-• 20분 이상 유축 X (피부 손상)
-• 흡입력 너무 세게 X (통증, 부종)
-• 통증 있으면 즉시 중단!
-
-🔧 유축량 적을 때 체크리스트
-
-✅ 깔때기 사이즈 맞나요?
-✅ 흡입력 너무 약하진 않나요?
-✅ 충분히 이완되었나요?
-✅ 수분 섭취 충분한가요?
-
-💚 유축량 ≠ 실제 젖양!
-유축기보다 아기가 훨씬 효율적으로 먹어요.
-유축량 적어도 걱정 마세요! 💪`,
-
-            '이유식시작': `이유식, 언제 어떻게 시작할까요? 🥄
-
-드디어 이유식 시작! 천천히, 즐겁게 해봐요!
-
-⏰ 이유식 시작 시기
-
-권장 시기: 만 6개월 (180일 전후)
-
-✅ 시작해도 되는 신호:
-• 목 가누기 완성
-• 도움받아 앉기 가능
-• 음식에 관심 (입 벌리기, 손 뻗기)
-• 혀 내밀기 반사 사라짐
-• 체중이 출생 시의 2배 이상
-
-⚠️ 아직 기다려야 하는 신호:
-• 숟가락 밀어내기
-• 음식에 관심 없음
-• 앉기 불안정
-
-🍚 첫 이유식 가이드
-
-1주차: 쌀미음
-• 하루 1회, 1-2숟가락으로 시작
-• 10배죽 (쌀:물 = 1:10)
-• 수유 전 배고플 때 시도
-
-2주차: 쌀미음 양 늘리기
-• 3-5숟가락까지
-• 아기 반응 보면서 조절
-
-3주차~: 새로운 식재료 추가
-• 감자, 고구마, 애호박 등
-• 새 음식은 3일 간격으로!
-• 알레르기 반응 확인
-
-🤱 모유수유와 이유식 병행
-
-핵심: 이유식은 "보충", 모유는 여전히 "주식"!
-
-만 6-8개월:
-• 이유식 1-2회 + 모유 수시로
-• 모유 먼저 → 이유식 나중에도 OK
-
-만 9-11개월:
-• 이유식 3회 + 모유 3-4회
-• 이유식 양 점점 늘리기
-
-만 12개월 이후:
-• 이유식이 주식으로 전환
-• 모유는 간식/정서적 수유로
-
-💡 이유식 성공 팁
-
-✅ 하면 좋은 것:
-• 가족과 함께 식사 분위기
-• 다양한 식감 경험시키기
-• 손으로 집어먹기 허용 (자율이유식)
-• 즐거운 표정으로!
-
-❌ 피해야 할 것:
-• 억지로 먹이기
-• 화면 보여주며 먹이기
-• 돌아다니며 먹이기
-• 비교하기 (다른 아기와)
-
-⚠️ 알레르기 주의 식품
-달걀, 우유, 밀, 땅콩, 견과류, 생선, 갑각류, 콩
-→ 소량씩 시작, 3일간 반응 관찰!
-
-💚 이유식은 마라톤이에요!
-처음엔 뱉어도, 적게 먹어도 정상이에요.
-음식과 친해지는 시간이라 생각하세요! 🌟`,
-
-            '젖말리기': `젖 말리기, 천천히 안전하게! 🍃
-
-갑자기 끊으면 젖몸살이 올 수 있어요. 단계적으로 줄여가세요!
-
-⏰ 젖 말리는 기간
-
-• 빠르면: 1-2주
-• 일반적: 2-4주
-• 오래 수유했다면: 4-6주
-
-📋 단계별 젖 말리기
-
-1단계: 수유 횟수 줄이기
-• 하루 1회씩 줄이기
-• 3-4일 간격으로
-• 낮 수유부터 줄이기
-
-2단계: 유축량 줄이기
-• 불편할 때만 조금씩
-• 완전히 비우지 X
-• 점점 간격 늘리기
-
-3단계: 자연 감소 기다리기
-• 2-3주면 많이 줄어요
-• 소량 분비는 몇 달간 정상
-
-💡 젖 말리기 도움법
-
-✅ 효과적인 방법:
-• 꽉 끼는 브라 착용
-• 양배추잎 냉찜질 (신기하게 효과 있어요!)
-• 세이지 차 (젖양 감소 효과)
-• 페퍼민트 차
-
-⚠️ 피해야 할 것:
-• 가슴 자극 (마사지 X)
-• 뜨거운 물 직접 X
-• 유축기로 완전 비우기 X
-
-🚨 병원 가야 할 때
-
-• 38도 이상 발열
-• 가슴에 딱딱한 멍울
-• 빨갛게 부어오름
-• 통증이 점점 심해질 때
-
-💚 젖 말리기도 엄마의 선택이에요.
-죄책감 느끼지 마세요! 💕`,
-
-            '약물수유': `약 먹으면서 수유해도 될까요? 💊
-
-대부분의 약은 수유 중에도 안전해요! 하지만 확인이 필요해요.
-
-✅ 수유 중 안전한 약 (일반적으로)
-
-진통제/해열제:
-• 타이레놀 (아세트아미노펜) ✅
-• 이부프로펜 (애드빌, 부루펜) ✅
-• 아스피린 ⚠️ (피하는 게 좋음)
-
-감기약:
-• 대부분의 기침약 ✅
-• 항히스타민 ⚠️ (아기 졸림 유발 가능)
-
-항생제:
-• 페니실린 계열 ✅
-• 세팔로스포린 계열 ✅
-• 아목시실린 ✅
-
-⚠️ 주의가 필요한 약
-
-• 일부 항우울제
-• 일부 항경련제
-• 항암제
-• 방사성 의약품
-
-→ 반드시 의사와 상담!
-
-💡 약 복용 팁
-
-1️⃣ 수유 직후에 복용
-• 다음 수유까지 약 농도가 낮아져요
-
-2️⃣ 단기 복용 약은 대부분 OK
-• 감기약 며칠은 괜찮아요
-
-3️⃣ 확인 방법
-• 약사에게 "수유 중인데요" 말하기
-• "LactMed" 앱/사이트 검색
-• 산부인과/소아과 상담
-
-🏥 꼭 의사와 상담할 때
-
-• 장기 복용 약
-• 새로 처방받는 약
-• 아기가 이상 반응 보일 때
-  (과도한 졸림, 보챔, 수유 거부)
-
-💚 아프면 치료받으세요!
-엄마가 건강해야 아기도 건강해요! 💪`,
-
-            '음식카페인': `수유 중 음식과 카페인! ☕
-
-수유 중에 뭐든 드셔도 돼요. 다만 적당히!
-
-☕ 카페인 가이드
-
-✅ 하루 권장량: 200-300mg 이하
-(커피 1-2잔 정도)
-
-카페인 함량 참고:
-• 아메리카노 (톨): 150mg
-• 라떼: 75mg
-• 녹차: 30-50mg
-• 콜라: 30-40mg
-• 초콜릿: 10-30mg
-
-⚠️ 카페인 과다 시 아기 반응:
-• 잠을 잘 못 자요
-• 보채고 짜증내요
-• 심하면 심박수 증가
-
-💡 팁: 수유 직후 마시면 OK!
-
-🍽️ 음식 가이드
-
-✅ 자유롭게 드세요:
-• 매운 음식 (아기 반응 보면서)
-• 회/초밥 (신선한 것)
-• 유제품
-• 견과류
-
-⚠️ 적당히 드세요:
-• 카페인 음료
-• 고지방 음식
-• 가공식품
-
-❌ 피하세요:
-• 술 (마셨다면 2시간 후 수유)
-• 수은 많은 생선 (참치, 황새치 과다)
-
-🤔 "이거 먹으면 젖양 늘어요?"
-
-젖양에 영향 준다고 알려진 음식:
-• 미역국, 가물치
-• 돼지족발
-• 호로파 (허브)
-
-→ 과학적 근거는 부족하지만, 
-   수분과 영양 섭취에는 도움!
-
-실제로 중요한 것:
-• 충분한 수분 (하루 2L 이상)
-• 균형 잡힌 식사
-• 자주 수유하기
-
-💚 너무 스트레스받지 마세요!
-뭘 먹느냐보다 잘 먹는 게 중요해요! 🌟`
-        };
-
-        function selectAge(age) {
-            selectedAge = age;
-            trackEvent('Navigation', 'select_age', age); // GA 이벤트
-            const topics = topicsByAge[age];
-            if (age === '신생아' && topics[0].topic === '초유') {
-                const buttonsHTML = topics.map(function(t) {
-                    if (t.topic === '초유') {
-                        return '<button class="option-btn" onclick="showAnswer(\'초유\')">' + t.text + '</button>';
-                    } else {
-                        return '<button class="option-btn" onclick="selectTopic(\'' + t.topic + '\')">' + t.text + '</button>';
-                    }
-                }).join('');
-                document.getElementById('topicButtons').innerHTML = buttonsHTML;
-                goToStep(2);
+        const chatArea = document.getElementById('chatArea');
+        const searchInput = document.getElementById('searchInput');
+        
+        const categories = [
+            { id: 'position', icon: '🤱', title: '자세 / 물림', desc: '수유 자세와 젖물림' },
+            { id: 'supply', icon: '💧', title: '젖량 고민', desc: '모유가 부족한 것 같아요' },
+            { id: 'nipple', icon: '👙', title: '유두 문제', desc: '통증, 상처, 함몰' },
+            { id: 'night', icon: '🌙', title: '밤수유', desc: '밤중 수유와 수면' },
+            { id: 'work', icon: '💼', title: '복직 준비', desc: '직장맘 유축과 보관' },
+            { id: 'weaning', icon: '🍼', title: '단유 / 이유', desc: '젖떼기와 이유식' },
+            { id: 'special', icon: '💜', title: '특수 상황', desc: '쌍둥이, 조산아' },
+            { id: 'urgent', icon: '🚨', title: '긴급 상황', desc: '즉시 대응 필요', urgent: true }
+        ];
+        
+        function renderHome() {
+            chatArea.innerHTML = `
+                <div class="message">
+                    <div class="bubble">안녕하세요! 👋<br><br>모유수유 여정에서 궁금한 점이 있으시면<br>카테고리를 선택하거나 검색해보세요.</div>
+                    <div class="category-grid">
+                        ${categories.map(cat => `
+                            <div class="category-card ${cat.urgent ? 'urgent' : ''}" onclick="selectCategory('${cat.id}')">
+                                <div class="category-icon">${cat.icon}</div>
+                                <div class="category-title">${cat.title}</div>
+                                <div class="category-desc">${cat.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function expandQuery(query) {
+            const expanded = [query.toLowerCase()];
+            tagDictionary.forEach(tag => {
+                if (query.includes(tag.name) || (tag.synonyms && tag.synonyms.some(s => query.includes(s)))) {
+                    expanded.push(tag.name.toLowerCase());
+                    if (tag.synonyms) tag.synonyms.forEach(s => expanded.push(s.toLowerCase()));
+                }
+            });
+            return [...new Set(expanded)];
+        }
+        
+        function search(query, categoryId = null) {
+            const keywords = expandQuery(query);
+            const results = [];
+            knowledgeUnits.forEach(unit => {
+                if (categoryId && unit.category !== categoryId) return;
+                let score = 0;
+                const title = (unit.title || '').toLowerCase();
+                const content = (unit.content || '').toLowerCase();
+                const unitKeywords = (unit.keywords || []).join(' ').toLowerCase();
+                const urgency = unit.urgency || '';
+                keywords.forEach(kw => {
+                    if (title.includes(kw)) score += 20;
+                    if (unitKeywords.includes(kw)) score += 15;
+                    if (content.includes(kw)) score += 5;
+                });
+                if (categoryId) score += 10;
+                if (urgency.includes('즉시대응')) score += 30;
+                else if (urgency.includes('24시간')) score += 20;
+                if (score > 0) results.push({ unit, score });
+            });
+            results.sort((a, b) => b.score - a.score);
+            return results.slice(0, 5);
+        }
+        
+        function selectCategory(categoryId) {
+            const cat = categories.find(c => c.id === categoryId);
+            if (!cat) return;
+            chatArea.innerHTML = `
+                <button class="back-btn" onclick="renderHome()">← 처음으로</button>
+                <div class="message" style="align-self:flex-end">
+                    <div class="bubble" style="background:var(--olive);color:white;border-radius:20px 20px 6px 20px;">${cat.icon} ${cat.title}</div>
+                </div>
+                <div class="message"><div class="typing"><span></span><span></span><span></span></div></div>
+            `;
+            setTimeout(() => showResults(search('', categoryId), cat), 500);
+        }
+        
+        function handleSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+            chatArea.innerHTML = `
+                <button class="back-btn" onclick="renderHome()">← 처음으로</button>
+                <div class="message" style="align-self:flex-end">
+                    <div class="bubble" style="background:var(--olive);color:white;border-radius:20px 20px 6px 20px;">${escapeHtml(query)}</div>
+                </div>
+                <div class="message"><div class="typing"><span></span><span></span><span></span></div></div>
+            `;
+            searchInput.value = '';
+            setTimeout(() => showResults(search(query), null, query), 500);
+        }
+        
+        function showResults(results, category, query) {
+            const lastMsg = chatArea.querySelector('.message:last-child');
+            if (results.length === 0) {
+                lastMsg.innerHTML = `<div class="bubble">관련 정보를 찾지 못했어요 😅<br><br>다른 키워드로 검색해보시거나 전문가 상담을 이용해보세요.</div>`;
                 return;
             }
-            const buttonsHTML = topics.map(function(t) {
-                return '<button class="option-btn" onclick="selectTopic(\'' + t.topic + '\')">' + t.text + '</button>';
-            }).join('');
-            document.getElementById('topicButtons').innerHTML = buttonsHTML;
-            goToStep(2);
+            
+            const main = results[0].unit;
+            const isUrgent = main.urgency?.includes('즉시대응');
+            const badge = main.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                          main.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                          '<span class="answer-badge badge-normal">' + (main.timeline || '일반') + '</span>';
+            
+            let html = `
+                <div class="bubble">${category ? category.icon + ' <strong>' + category.title + '</strong>에 대해 안내해드릴게요.' : '🔍 검색 결과를 찾았어요!'}</div>
+                <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+                    <div class="answer-header">${badge}<span class="answer-badge badge-normal">${main.chapter || ''}</span></div>
+                    <div class="answer-title">${escapeHtml(main.title)}</div>
+                    <div class="answer-content">${formatContent(main.content)}</div>
+                    ${main.keywords?.length ? '<div class="answer-keywords">' + main.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+                </div>
+            `;
+            
+            if (results.length > 1) {
+                html += '<div class="related-questions"><div class="related-title">📌 관련 정보</div>';
+                results.slice(1, 4).forEach(r => {
+                    html += `<div class="related-btn" data-unit-id="${r.unit.id}">${escapeHtml(r.unit.title)}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            // 액션 버튼 영역
+            html += getActionButtons(main.id, main.title, main.content);
+            
+            lastMsg.innerHTML = html;
+            
+            // 관련 버튼 이벤트
+            lastMsg.querySelectorAll('.related-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const unitId = this.getAttribute('data-unit-id');
+                    if (unitId) showDetail(unitId);
+                });
+            });
+            
+            // 액션 버튼 이벤트
+            setupActionButtons(lastMsg, main);
         }
         
-        function selectTopic(topic) {
-            selectedTopic = topic;
-            trackEvent('Navigation', 'select_topic', topic); // GA 이벤트
-            const situs = situations[topic] || [];
-            if (situs.length === 0) { showAnswer(topic); return; }
-            if (situs.length === 1) { showAnswer(situs[0].answer); return; }
-            const buttonsHTML = situs.map(function(s) {
-                const urgentClass = s.urgent ? ' urgent' : '';
-                const urgentIcon = s.urgent ? '🚨 ' : '';
-                return '<button class="option-btn' + urgentClass + '" onclick="showAnswer(\'' + s.answer + '\')">' + urgentIcon + s.text + '</button>';
-            }).join('');
-            document.getElementById('situationButtons').innerHTML = buttonsHTML;
-            goToStep(3);
+        function showDetail(unitId) {
+            const unit = knowledgeUnits.find(u => u.id === unitId);
+            if (!unit) return;
+            const isUrgent = unit.urgency?.includes('즉시대응');
+            const badge = unit.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                          unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                          '<span class="answer-badge badge-normal">' + (unit.timeline || '일반') + '</span>';
+            
+            const newCard = document.createElement('div');
+            newCard.className = 'message';
+            newCard.style.animation = 'fadeIn 0.3s ease';
+            newCard.innerHTML = `
+                <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+                    <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+                    <div class="answer-title">${escapeHtml(unit.title)}</div>
+                    <div class="answer-content">${formatContent(unit.content)}</div>
+                    ${unit.keywords?.length ? '<div class="answer-keywords">' + unit.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+                </div>
+                ${getActionButtons(unit.id, unit.title, unit.content)}
+            `;
+            chatArea.appendChild(newCard);
+            
+            // 액션 버튼 이벤트
+            setupActionButtons(newCard, unit);
+            
+            chatArea.scrollTop = chatArea.scrollHeight;
         }
         
-        function showAnswer(answerKey) {
-            const answer = answers[answerKey];
-            trackEvent('Content', 'view_answer', answerKey); // GA 이벤트
-            previousStep = currentStep;
-            showLoading();
-            setTimeout(function() {
-                hideLoading();
-                if (!answer) {
-                    document.getElementById('answerContent').innerHTML = 
-                        '<div class="answer-box">죄송해요! 😓\n\n이 답변은 준비 중이에요.\n조만간 업데이트할게요!</div>' +
-                        '<a href="tel:010-7573-2475" class="expert-btn">👩‍⚕️ 전문가에게 도움 요청하기</a>' +
-                        '<button class="back-btn" onclick="goBack(previousStep)">← 이전으로</button>';
-                    goToStep(4);
-                    setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 100);
-                    return;
+        function getActionButtons(id, title, content) {
+            return `
+                <div class="action-buttons">
+                    <button class="action-btn" data-action="bookmark" data-id="${id}">⭐ 즐겨찾기</button>
+                    <button class="action-btn" data-action="share">💬 공유</button>
+                    <button class="action-btn" data-action="copy">🔗 복사</button>
+                    <a href="tel:010-7573-2475" class="action-btn expert">👩‍⚕️ 전문가에게 도움 요청하기</a>
+                    <button class="action-btn back" onclick="renderHome()">← 이전으로</button>
+                </div>
+            `;
+        }
+        
+        function setupActionButtons(container, unit) {
+            const bookmarkBtn = container.querySelector('[data-action="bookmark"]');
+            const shareBtn = container.querySelector('[data-action="share"]');
+            const copyBtn = container.querySelector('[data-action="copy"]');
+            
+            if (bookmarkBtn) {
+                // 저장된 즐겨찾기 확인
+                const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+                if (bookmarks.includes(unit.id)) {
+                    bookmarkBtn.innerHTML = '⭐ 즐겨찾기 됨';
+                    bookmarkBtn.style.background = 'var(--olive-bg)';
                 }
-                currentAnswerKey = answerKey;
-                document.getElementById('answerContent').innerHTML = 
-                    '<div class="answer-box">' + answer + '</div>' +
-                    '<div class="action-buttons">' +
-                        '<button class="action-btn" onclick="toggleBookmark()" id="bookmarkBtn"><span id="bookmarkIcon">⭐</span> 즐겨찾기</button>' +
-                        '<button class="action-btn" onclick="shareKakao()">💬 공유</button>' +
-                        '<button class="action-btn" onclick="copyLink()">🔗 복사</button>' +
-                        '<button class="action-btn" onclick="printAnswer()">🖨️ 프린트</button>' +
-                    '</div>' +
-                    '<a href="tel:010-7573-2475" class="expert-btn" onclick="trackEvent(\'Conversion\', \'expert_call\', \'' + answerKey + '\')">👩‍⚕️ 전문가에게 도움 요청하기</a>' +
-                    '<button class="back-btn" onclick="goBack(previousStep)">← 이전으로</button>';
-                checkBookmark();
-                goToStep(4);
-                setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 100);
-            }, 500);
-        }
-        
-        function goToStep(step) {
-            var steps = document.querySelectorAll('.step');
-            for (var i = 0; i < steps.length; i++) { steps[i].classList.remove('active'); }
-            document.getElementById('step' + step).classList.add('active');
-            var progressText = document.getElementById('progressText');
-            if (step === 1) progressText.textContent = 'Step 1/3';
-            else if (step === 2) progressText.textContent = 'Step 2/3';
-            else if (step === 3) progressText.textContent = 'Step 3/3';
-            else if (step === 4) progressText.textContent = '✅ 답변';
-            currentStep = step;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function goBack(toStep) { goToStep(toStep); }
-        function showLoading() { document.getElementById('loadingSpinner').classList.add('active'); }
-        function hideLoading() { document.getElementById('loadingSpinner').classList.remove('active'); }
-        
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            var isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-            showToast(isDark ? '다크모드 활성화' : '라이트모드 활성화');
-        }
-        
-        window.addEventListener('load', function() {
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('themeToggle').textContent = '☀️';
+                
+                bookmarkBtn.addEventListener('click', function() {
+                    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+                    const idx = bookmarks.indexOf(unit.id);
+                    if (idx === -1) {
+                        bookmarks.push(unit.id);
+                        this.innerHTML = '⭐ 즐겨찾기 됨';
+                        this.style.background = 'var(--olive-bg)';
+                        alert('즐겨찾기에 추가되었습니다!');
+                    } else {
+                        bookmarks.splice(idx, 1);
+                        this.innerHTML = '⭐ 즐겨찾기';
+                        this.style.background = 'white';
+                        alert('즐겨찾기가 해제되었습니다.');
+                    }
+                    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                });
             }
-        });
-        
-        function toggleBookmark() {
-            var bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-            var index = bookmarks.indexOf(currentAnswerKey);
-            if (index > -1) {
-                bookmarks.splice(index, 1);
-                document.getElementById('bookmarkBtn').classList.remove('active');
-                showToast('즐겨찾기에서 제거했어요');
-            } else {
-                bookmarks.push(currentAnswerKey);
-                document.getElementById('bookmarkBtn').classList.add('active');
-                showToast('즐겨찾기에 추가했어요!');
+            
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    const text = unit.title + '\n\n' + unit.content.replace(/<[^>]*>/g, '');
+                    if (navigator.share) {
+                        navigator.share({ title: unit.title, text: text });
+                    } else {
+                        alert('공유 기능은 모바일에서 사용 가능합니다.');
+                    }
+                });
             }
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        }
-        
-        function checkBookmark() {
-            var bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-            if (bookmarks.indexOf(currentAnswerKey) > -1) {
-                document.getElementById('bookmarkBtn').classList.add('active');
+            
+            if (copyBtn) {
+                copyBtn.addEventListener('click', function() {
+                    const text = unit.title + '\n\n' + unit.content.replace(/<[^>]*>/g, '');
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('내용이 복사되었습니다!');
+                    }).catch(() => {
+                        alert('복사에 실패했습니다.');
+                    });
+                });
             }
         }
         
-        function shareKakao() {
-            var text = '육아 컴패니언 AI - 모유수유 가이드\n' + window.location.href;
-            if (navigator.share) {
-                navigator.share({ title: '육아 컴패니언 AI', text: text, url: window.location.href }).catch(function() {});
-            } else {
-                copyToClipboard(text);
-                showToast('공유 내용을 복사했어요!');
-            }
+        function formatContent(content) {
+            if (!content) return '';
+            return content.replace(/\n/g, '<br>');
         }
         
-        function copyLink() { copyToClipboard(window.location.href); showToast('링크를 복사했어요!'); }
-        
-        function copyToClipboard(text) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text);
-            } else {
-                var textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-            }
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
-        function printAnswer() { window.print(); }
-        
-        function showToast(message) {
-            var toast = document.createElement('div');
-            toast.className = 'toast show';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(function() {
-                toast.classList.remove('show');
-                setTimeout(function() { document.body.removeChild(toast); }, 300);
-            }, 2000);
-        }
+        searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
+        renderHome();
     </script>
 </body>
 </html>
