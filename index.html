@@ -1,1 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤱 육아 컴패니언 AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: #F1F8E9;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #C8E6C9;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background: #4CAF50;
+            transform: scale(1.3);
+        }
+        
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            font-size: 20px;
+            color: #2E7D32;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .option-btn {
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #2E7D32;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .option-btn:hover {
+            background: #E8F5E9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+        
+        .option-btn.urgent {
+            border-color: #F44336;
+            color: #C62828;
+            background: #FFEBEE;
+        }
+        
+        .option-btn.urgent:hover {
+            background: #FFCDD2;
+        }
+        
+        .back-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: white;
+            border: 1px solid #BDBDBD;
+            border-radius: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #F5F5F5;
+        }
+        
+        .answer-box {
+            background: #F5F5F5;
+            padding: 24px;
+            border-radius: 12px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .expert-btn {
+            display: block;
+            width: 100%;
+            padding: 16px 20px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .expert-btn:hover {
+            background: linear-gradient(135deg, #FF5252, #FF7043);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .option-btn {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤱 육아 컴패니언 AI</h1>
+            <p>맞춤형 모유수유 가이드</p>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-dot active" id="dot1"></div>
+            <div class="progress-dot" id="dot2"></div>
+            <div class="progress-dot" id="dot3"></div>
+        </div>
+        
+        <div class="content">
+            <div class="step active" id="step1">
+                <h2>아기가 태어난 지 얼마나 되었나요?</h2>
+                <button class="option-btn" onclick="selectAge('신생아')">
+                    🍼 신생아 (0-4주)
+                </button>
+                <button class="option-btn" onclick="selectAge('1-3개월')">
+                    👶 1-3개월
+                </button>
+                <button class="option-btn" onclick="selectAge('4-6개월')">
+                    🎵 4-6개월
+                </button>
+                <button class="option-btn" onclick="selectAge('6개월 이상')">
+                    🦷 6개월 이상
+                </button>
+            </div>
+            
+            <div class="step" id="step2">
+                <h2>지금 가장 힘든 점은 어떤 쪽인가요?</h2>
+                <div id="topicButtons"></div>
+                <button class="back-btn" onclick="goBack(1)">← 이전으로</button>
+            </div>
+            
+            <div class="step" id="step3">
+                <h2 id="step3Title">아래 중 해당되는 것이 있나요?</h2>
+                <div id="situationButtons"></div>
+                <button class="back-btn" onclick="goBack(2)">← 이전으로</button>
+            </div>
+            
+            <div class="step" id="step4">
+                <div id="answerContent"></div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        let currentStep = 1;
+        let selectedAge = '';
+        let selectedTopic = '';
+        let previousStep = 1; // 이전 스텝 기억
+        
+        const topicsByAge = {
+            '신생아': [
+                { text: '🌟 초유는 언제까지?', topic: '초유' },
+                { text: '🤱 젖물림/자세', topic: '젖물림/자세' },
+                { text: '💧 젖양 걱정', topic: '젖양 걱정' },
+                { text: '🩹 가슴 통증/염증', topic: '가슴 통증/염증' },
+                { text: '👶 아기 상태', topic: '아기 상태' }
+            ],
+            '1-3개월': [
+                { text: '🤱 젖물림/자세', topic: '젖물림/자세' },
+                { text: '💧 젖양 걱정 / 폭풍성장기', topic: '젖양 걱정_1-3개월' },
+                { text: '🩹 가슴 통증/염증', topic: '가슴 통증/염증' },
+                { text: '⚖️ 아기 체중/수유량', topic: '아기 체중/수유량' },
+                { text: '🌙 밤수유/기타', topic: '밤수유/기타' }
+            ],
+            '4-6개월': [
+                { text: '💧 젖양 걱정', topic: '젖양 걱정' },
+                { text: '⚖️ 아기 체중/수유량', topic: '아기 체중/수유량' },
+                { text: '🥄 이유식 시작', topic: '이유식 시작' },
+                { text: '🌙 밤수유/기타', topic: '밤수유/기타' }
+            ],
+            '6개월 이상': [
+                { text: '🥘 이유식과 수유 병행', topic: '이유식 병행' },
+                { text: '💼 복직/유축', topic: '복직/유축' },
+                { text: '🌙 밤수유', topic: '밤수유' },
+                { text: '💬 기타', topic: '기타' }
+            ]
+        };
+        
+        const situations = {
+            '초유': [],
+            '젖물림/자세': [
+                { text: '젖물림이 안 돼요', answer: '수유자세' },
+                { text: '수유 자세가 불편해요', answer: '수유자세' }
+            ],
+            '젖양 걱정': [
+                { text: '젖이 너무 적게 나와요', answer: '젖량부족' },
+                { text: '젖이 너무 많이 나와요', answer: '젖량과다' },
+                { text: '한쪽만 잘 안 나와요', answer: '한쪽' }
+            ],
+            '젖양 걱정_1-3개월': [
+                { text: '갑자기 계속 배고파해요 (폭풍성장기)', answer: '젖량부족' },
+                { text: '젖이 너무 적게 나와요', answer: '젖량부족' },
+                { text: '한쪽만 잘 안 나와요', answer: '한쪽' },
+                { text: '갑자기 젖양이 줄었어요', answer: '젖량부족' }
+            ],
+            '가슴 통증/염증': [
+                { text: '38도 이상 발열', answer: '발열', urgent: true },
+                { text: '가슴이 심하게 붓고 열감', answer: '유선염', urgent: true },
+                { text: '젖몸살이 왔어요', answer: '젖몸살' }
+            ],
+            '아기 상태': [
+                { text: '아기가 너무 자요', answer: '아기자요' }
+            ],
+            '아기 체중/수유량': [
+                { text: '체중이 잘 안 늘어요', answer: '체중증가' },
+                { text: '아기가 너무 자요', answer: '아기자요' }
+            ],
+            '복직/유축': [
+                { text: '복직 준비 방법', answer: '복직준비' },
+                { text: '유축 방법/시간', answer: '유축시간' },
+                { text: '모유 보관/해동', answer: '모유보관' }
+            ],
+            '밤수유/기타': [
+                { text: '밤수유가 힘들어요', answer: '밤수유' }
+            ],
+            '이유식 시작': [
+                { text: '이유식 언제 시작하나요?', answer: '이유식시작' }
+            ],
+            '기타': []
+        };
+        
+        const answers = {
+            '초유': '초유는 아기에게 최고의 선물! 🌟\n\n🍯 초유란?\n\n출산 후 처음 나오는 진한 노란색 젖이에요.\n\n완전한 모유가 나오기 전,\n아기를 위한 특별한 영양제예요!\n\n📅 기간:\n\n출산 후 2-5일:\n• 1-3일: 진한 노란색\n• 4-5일: 점점 희어짐\n• 5일 후: 성숙 모유로 전환\n\n💛 초유의 특징:\n\n색깔:\n• 진한 노란색/주황색\n• 정상이에요!\n• 베타카로틴 때문\n\n농도:\n• 아주 진함\n• 걸쭉함\n• 영양 밀도 높음\n\n양:\n• 매우 적음\n• 첫날 5-7ml\n• 이것만으로 충분!\n\n🌟 초유가 특별한 이유:\n\n1. 면역력 최고! 🛡️\n\n항체 가득:\n• 엄마의 면역력 전달\n• 감염 예방\n• 백신 같은 효과\n\nIgA 항체:\n• 장 보호\n• 병균 차단\n• 알레르기 예방\n\n2. 완벽한 영양 🍼\n\n단백질:\n• 성숙 모유의 3배\n• 성장에 필수\n• 뇌 발달\n\n비타민 A:\n• 시력 발달\n• 면역력 강화\n\n아연:\n• 성장 촉진\n• 면역 강화\n\n3. 소화 잘 됨 ✅\n\n완벽한 설계:\n• 신생아 위에 딱 맞음\n• 쉽게 소화\n• 변비 예방\n\n태변 배출:\n• 검은 첫 변\n• 빨리 배출 도움\n• 황달 예방\n\n✅ "충분할까요?" 걱정 마세요!\n\n첫날 5-7ml면 충분:\n\n신생아 위 크기:\n• 첫날: 체리만 (5-7ml)\n• 3일: 호두만 (22-27ml)\n• 7일: 살구만 (45-60ml)\n\n→ 조금씩 자주가 정답!\n\n왜 적게 나올까?\n• 일부러 적게 설계됨\n• 아기 위가 작아서\n• 자주 수유 연습용\n• 정상이에요!\n\n💡 초유 수유 Tip:\n\n1. 빨리 시작 ⏰\n\n출산 후 1시간 내:\n• 가능하면 빨리\n• 피부 접촉하며\n• 자연스럽게\n\n왜 빨리?\n• 아기 본능 강할 때\n• 엄마 호르몬 분비\n• 유대감 형성\n\n2. 자주 물리기 🍼\n\n하루 8-12회:\n• 2-3시간마다\n• 밤에도!\n• 깨워서라도\n\n왜 자주?\n• 위가 작아서\n• 빨리 소화돼서\n• 젖량 늘리기 위해\n\n3. 양쪽 다 수유 ⚖️\n\n균형있게:\n• 한쪽 10-15분\n• 다른쪽도 10-15분\n• 교대로 시작\n\n4. 인내심 가지기 💪\n\n처음엔 어려워요:\n• 젖 물림 연습 중\n• 엄마도 배우는 중\n• 아기도 배우는 중\n\n→ 며칠 지나면 익숙해져요!\n\n⚠️ 이런 경우 도움 요청:\n\n즉시 상담:\n• 24시간 이내 수유 안 됨\n• 아기가 전혀 안 빰\n• 극심한 통증\n• 유두 심하게 손상\n\n걱정하지 마세요:\n• 처음엔 다 어려워요\n• 전문가 도움 받으면 OK\n• 며칠이면 익숙해져요\n\n💚 Remember:\n\n초유는 소량이지만 완벽해요!\n\n5-7ml = 아기에게 딱 맞는 양\n\n자주 물리는 게 핵심!\n하루 8-12회 목표! 🎯',
+            
+            '젖량부족': '젖량을 늘리고 싶으시군요! 💧\n\n🤔 정말 부족한가요?\n\n먼저 확인:\n\n폭풍성장기일 수도:\n• 2-3주, 6주, 3개월, 6개월\n• 갑자기 계속 배고파함\n• 2-3일간 집중 수유\n• 정상이에요!\n\n이때는:\n→ 젖이 부족한 게 아니라\n→ 아기가 더 많이 필요한 거예요!\n→ 자주 수유하면 자동으로 늘어남!\n\n진짜 부족 신호:\n❌ 소변 6회 미만\n❌ 체중 증가 없음\n❌ 아기 기운 없음\n❌ 피부 탄력 없음\n\n✅ 확실한 방법:\n\n1. 자주 수유 🍼\n\n가장 중요:\n• 하루 8-12회\n• 한 번에 15-20분\n• 밤수유 꼭!\n• 아기가 원할 때마다\n\n폭풍성장기엔:\n• 더 자주! (시간마다)\n• 2-3일만 버티면\n• 젖량 자동 증가\n\n2. 올바른 젖 물림 🤱\n\n효율적으로:\n• 유륜 전체를 깊게\n• 제대로 물려야\n• 젖이 잘 나옴\n\n3. 휴식 & 영양 😴\n\n필수:\n• 수면 6-7시간\n• 수분 2-3L\n• 균형잡힌 식사\n• 스트레스 줄이기\n\n4. 유축 추가 🍶\n\n도움됨:\n• 수유 후 10-15분\n• 하루 2-3회\n• 자극 증가\n\n📈 효과:\n\n48-72시간:\n• 변화 시작\n• 가슴 더 차는 느낌\n\n1주:\n• 확실히 증가\n• 아기 만족\n\n💡 Tip:\n\n밤수유 중요:\n• 새벽 2-6시\n• 프롤락틴 최고조\n• 젖량 유지 핵심\n\n양쪽 수유:\n• 한쪽 비우기\n• 다른 쪽도\n• 균형있게\n\n💚 Remember:\n\n폭풍성장기는 정상!\n\n갑자기 많이 먹는다고\n젖이 부족한 게 아니에요.\n\n자주 수유 = 해결책! 💪',
+            
+            '젖량과다': '젖이 너무 많이 나오시는군요! 💦\n\n🔍 증상:\n• 젖이 분수처럼 분출\n• 아기가 사레 들림\n• 가슴이 항상 딱딱함\n\n✅ 대처 방법:\n\n1. 한쪽만 수유 🍼\n• 2-3시간 동안 한쪽만\n• 반대편 유축 안 함\n\n2. 눕혀서 수유 🛏️\n• 아기를 엄마 위로\n• 중력 이용\n\n3. 수유 전 조금 짜기 💧\n• 분출 줄이기\n\n⏰ 개선: 2-3주 후',
+            
+            '한쪽': '한쪽 가슴만 젖이 잘 안 나오시는군요. 😔\n\n이건 꽤 흔한 일이에요!\n\n🔍 이유:\n• 유선 발달 차이\n• 한쪽을 더 자주 사용\n• 막힌 유관\n• 아기가 한쪽 선호\n\n✅ 해결 방법:\n\n1. 약한 쪽 먼저 🍼\n• 하루 5-6회는 약한 쪽 먼저\n• 2-3주 지속\n\n2. 자주 자극 💆\n• 약한 쪽 추가 유축\n• 수유 후 10-15분\n\n💡 목표: 70-80% 정도면 충분!',
+            
+            '발열': '🚨 38도 이상 고열! 즉시 대응 필요!\n\n🔥 상황 파악:\n\n지금 확인하세요:\n\n1. 체온 측정:\n• 정확히 몇 도?\n• 38도 이상?\n• 39도 이상은 더 위험!\n\n2. 언제부터?:\n• 몇 시간 전?\n• 12시간 넘었나요?\n\n3. 다른 증상:\n• 가슴 빨갛게 부음?\n• 덩어리 만져짐?\n• 오한이나 근육통?\n\n🏥 즉시 병원 가야!\n\n🚨 이런 경우 응급:\n\n✅ 12시간 이상 38도 이상\n✅ 39도 이상 고열\n✅ 가슴 빨갛게 부어오름\n✅ 덩어리 + 통증\n✅ 오한, 근육통\n✅ 고름이나 피\n✅ 심한 두통, 구토\n\n→ 유방염 가능성!\n\n💊 응급 처치 (병원 가기 전):\n\n1. 해열제 복용 🌡️\n\n타이레놀 (아세트아미노펜):\n• 안전함 (수유 중 OK)\n• 500mg 1-2알\n• 4-6시간 간격\n\n이부프로펜:\n• 역시 안전\n• 200mg 1-2알\n\n⚠️ 아스피린은 NO!\n\n2. 계속 수유! 🍼\n\n매우 중요:\n• 수유 중단 X\n• 오히려 자주 수유\n• 2시간마다\n• 막힌 젖 빼내기\n\n안전:\n• 아기에게 전염 X\n• 수유해도 안전\n• 항체 전달됨\n\n한쪽만 아프면:\n• 아픈 쪽부터 수유\n• 완전히 비우기\n\n3. 휴식과 수분 💧\n\n휴식:\n• 침대에서 쉬기\n• 가사 미루기\n• 도움 요청\n\n수분:\n• 물 많이 마시기\n• 하루 3L\n• 탈수 방지\n\n영양:\n• 먹을 수 있으면 먹기\n• 가벼운 음식\n\n4. 찜질 🌡️\n\n따뜻한 찜질:\n• 수유 전\n• 5-10분\n• 혈액 순환\n\n차가운 찜질:\n• 수유 후\n• 염증 완화\n• 10-15분\n\n⚠️ 절대 하지 마세요!\n\n❌ 수유 중단\n❌ 유축 중단\n❌ 아픈 쪽 방치\n❌ 항생제 없이 48시간 이상 버티기\n❌ "괜찮아지겠지" 방치\n\n🏥 병원에서 받을 치료:\n\n항생제 처방:\n\n안전한 항생제:\n• 수유 중 안전\n• 10-14일 복용\n• 꼭 끝까지!\n\n중요:\n• 증상 좋아져도 끝까지\n• 재발 방지\n\n추가 검사:\n\n필요시:\n• 초음파\n• 유방 농양 확인\n• 배농 필요한지\n\n💚 예방이 최선:\n\n앞으로:\n• 규칙적 수유\n• 완전히 비우기\n• 충분한 휴식\n• 조이는 옷 피하기\n• 스트레스 관리\n\n🚨 Remember:\n\n고열은 긴급 상황!\n\n12시간 이상 38도 이상이면\n반드시 병원 가세요!\n\n수유는 계속하되,\n치료는 꼭 받으세요! 💪',
+            
+            '젖몸살': '젖몸살로 불편하시죠 😢\n\n🔍 젖몸살이란?\n\n가슴에 젖이 차서 딱딱하고 붓고 아픈 상태예요.\n\n언제 생기나요?\n• 출산 후 2-5일 (젖 돌 때)\n• 수유 간격 길어질 때\n• 아기가 덜 먹을 때\n• 갑자기 수유 중단했을 때\n\n🚨 24시간 내 대처가 중요!\n\n방치하면 → 유방염으로 악화!\n\n✅ 즉시 할 일:\n\n1. 자주 자주 수유! 🍼\n\n가장 중요:\n• 2시간마다 수유\n• 밤에도!\n• 한쪽 15-20분씩\n• 완전히 비우기\n\n아프더라도:\n• 계속 수유해야\n• 이게 해결책!\n\n2. 따뜻한 찜질 🌡️\n\n수유 전:\n• 따뜻한 수건\n• 5-10분\n• 샤워도 좋음\n• 사출 반사 촉진\n\n3. 부드러운 마사지 💆\n\n방법:\n• 겨드랑이에서 유두 방향\n• 원을 그리며\n• 부드럽게\n• 강하게 누르지 마세요!\n\n효과:\n• 막힌 유관 풀림\n• 젖 흐름 개선\n\n4. 차가운 찜질 (수유 후) ❄️\n\n수유 후:\n• 차가운 팩\n• 10-15분\n• 염증 완화\n• 통증 감소\n\n재료:\n• 얼음팩\n• 양배추잎 (냉장)\n• 차가운 수건\n\n5. 편안한 자세 😴\n\n유방 압박 피하기:\n• 조이는 브래지어 NO\n• 엎드려 자기 NO\n• 헐렁한 옷\n\n6. 진통제 복용 💊\n\n안전한 약:\n• 타이레놀\n• 이부프로펜\n• 수유 중 안전\n\n7. 유축 (필요시) 🍶\n\n수유 후에도 딱딱하면:\n• 손 또는 기계 유축\n• 부드러워질 때까지\n• 완전히 비우지는 말고\n• 편안한 정도만\n\n📅 호전 시기:\n\n24시간:\n• 조금 나아짐\n• 부기 감소\n\n48-72시간:\n• 많이 좋아짐\n• 딱딱함 사라짐\n\n1주:\n• 완전 회복\n\n⚠️ 병원 가야 할 때:\n\n🏥 즉시 병원:\n• 38도 이상 발열 12시간+\n• 빨갛게 부어오름\n• 덩어리가 커짐\n• 고름이나 피\n• 48시간 지나도 안 나음\n• 심한 통증으로 수유 불가\n\n→ 유방염 가능성!\n\n💡 예방법:\n\n앞으로:\n• 규칙적 수유\n• 밤수유 건너뛰지 않기\n• 완전히 비우기\n• 수유 간격 급격히 늘리지 않기\n• 충분한 휴식\n\n💚 Remember:\n\n젖몸살은 24시간 내 대응이 핵심!\n\n자주 수유 + 찜질 + 휴식 = 해결\n\n방치하면 유방염으로!\n빠르게 대처하세요! 💪',
+            
+            '수유자세': '수유 자세와 젖 물림! 🤱\n\n🎯 올바른 젖 물림이 가장 중요!\n\n젖 물림이 잘못되면:\n• 유두 상처\n• 통증\n• 젖량 부족\n• 아기도 힘들어요\n\n✅ 올바른 젖 물림 방법:\n\n1단계: 아기 자세 ✨\n\n중요:\n• 아기 몸 전체가 엄마 쪽으로\n• 배와 가슴이 엄마에게\n• 고개만 돌린 게 아니라\n• 몸 전체가 엄마를 향해야\n\n체크:\n• 귀-어깨-엉덩이 일직선\n• 아기가 편안한지\n\n2단계: 입 크게 벌리기 👄\n\n유도 방법:\n• 유두로 아기 입술 건드리기\n• 위아래로 간지럽히기\n• 아기가 하품하듯 크게 벌림\n• "아~" 하는 느낌\n\n타이밍:\n• 입이 최대한 벌어졌을 때\n• 재빨리 물리기!\n\n3단계: 깊게 물리기 🎯\n\n핵심:\n• 유두만 X\n• 유륜 전체를 깊게 ✅\n• 아래쪽 유륜이 더 많이\n\n확인:\n• 아기 입술 밖으로 말려있음\n• 위쪽보다 아래쪽 유륜 더 많이\n• 턱이 가슴에 닿음\n• 코는 가슴에서 살짝 떨어짐\n\n4단계: 제대로 물렸는지 확인 ✅\n\n좋은 신호:\n✅ 통증 없음 (처음 몇 초 제외)\n✅ 리드미컬한 빨기\n✅ 꿀꺽꿀꺽 삼키는 소리\n✅ 뺨이 둥글게\n✅ 편안한 느낌\n\n나쁜 신호:\n❌ 계속 아픔\n❌ 딸깍딸깍 소리\n❌ 뺨이 쑥 들어감\n❌ 입에서 공기 새는 소리\n\n→ 빼서 다시!\n\n🔄 잘못 물렸을 때:\n\n빼는 방법:\n1. 새끼손가락 넣기\n2. 아기 입 옆으로\n3. 살짝 벌려서 빼기\n4. 절대 그냥 안 빼요!\n\n다시 시도:\n• 서두르지 말고\n• 천천히\n• 아기가 준비될 때까지\n\n📍 4가지 주요 자세:\n\n각자에게 맞는 자세가 있어요!\n\n1. 교차 요람 자세 🤱\n\n최고 추천:\n• 신생아에게 가장 좋음\n• 컨트롤 쉬움\n\n방법:\n• 왼쪽 수유 → 오른손으로 받침\n• 머리와 목을 지지\n• 왼손으로 가슴 받침\n\n장점:\n• 아기 머리 잘 조절\n• 젖 물림 연습하기 좋음\n\n2. 요람 자세 👶\n\n가장 편함:\n• 익숙해진 후\n• 오래 수유해도 OK\n\n방법:\n• 왼쪽 수유 → 왼팔로 안기\n• 아기 머리가 팔꿈치 안쪽\n• 오른손은 자유\n\n장점:\n• 가장 자연스러움\n• 손이 자유로움\n\n3. 풋볼 홀드 🏈\n\n이럴 때 최고:\n• 제왕절개\n• 쌍둥이\n• 큰 가슴\n• 작은 아기\n\n방법:\n• 아기를 옆구리 아래로\n• 쿠션으로 높이 조절\n• 발이 뒤쪽으로\n\n장점:\n• 배 압박 없음\n• 아기 잘 보임\n• 젖 물림 조절 쉬움\n\n4. 누워서 수유 🛏️\n\n언제:\n• 밤수유\n• 회복 중\n• 피곤할 때\n\n방법:\n• 옆으로 누워서\n• 아기도 옆으로\n• 배끼리 마주 보기\n\n주의:\n• 안전하게!\n• 아기 숨쉬기 편하게\n• 엄마가 깊이 안 자도록\n\n💡 자세 선택 Tip:\n\n상황별:\n• 신생아: 교차 요람\n• 제왕절개: 풋볼 홀드\n• 밤수유: 누워서\n• 일반: 요람 자세\n\n공통 원칙:\n✅ 아기를 엄마 쪽으로\n✅ 배와 가슴이 맞닿게\n✅ 엄마가 편안해야\n✅ 쿠션 많이 활용\n✅ 아기를 들어올리기 (엄마가 굽히지 않기)\n\n⚠️ 잘못된 자세:\n\n피해야 할 것:\n❌ 아기 몸이 비틀림\n❌ 엄마가 허리 굽힘\n❌ 아기를 끌어당김\n❌ 긴장한 자세\n\n💚 Remember:\n\n올바른 젖 물림 = 성공의 핵심!\n\n• 유륜 전체를 깊게\n• 턱이 가슴에\n• 통증 없어야 정상\n\n처음엔 어렵지만\n며칠이면 익숙해져요! 💪',
+            
+            '유두상처': '유두에 상처가 났군요 😢\n\n🔍 원인:\n• 잘못된 젖 물림 (가장 흔함)\n• 혀유착증\n• 건조함\n• 유두 백반점\n\n✅ 해결 방법:\n\n1. 젖 물림 교정 🎯\n• 유륜 전체를 깊게\n• 아기 입 크게 벌리기\n• 턱이 가슴에 닿게\n\n2. 모유 바르기 💧\n• 수유 후 모유 짜서\n• 유두에 발라 말리기\n• 천연 치유 효과\n\n3. 유두 보호기 사용 🛡️\n• 심한 통증 시\n• 임시 방편\n• 물림 교정과 병행\n\n4. 공기 접촉 🌬️\n• 브래지어 벗고\n• 하루 1-2시간\n• 빠른 회복\n\n⚠️ 병원 가야:\n• 피가 나거나 고름\n• 1주일 이상 안 나음\n• 극심한 통증',
+            
+            '아기자요': '아기가 너무 많이 자서 걱정이시군요 😴\n\n⏰ 정상 수면:\n• 신생아: 16-20시간\n• 2-4주: 15-18시간\n\n🚨 언제 깨워야:\n\n신생아 (0-4주):\n✅ 3-4시간 이상 안 깨면 깨우기!\n\n이유:\n• 저혈당 위험\n• 탈수 위험\n• 황달 악화 가능\n• 젖량 유지 필요\n\n👶 아기 깨우는 방법:\n\n1단계:\n• 기저귀 갈기\n• 옷 벗기기\n• 발바닥 간지럽히기\n\n2단계:\n• 젖은 수건으로 얼굴\n• 세워서 안기\n• 이름 부르기\n\n⚠️ 즉시 소아과:\n• 깨워도 반응 없음\n• 축 늘어짐\n• 먹으려 하지 않음\n• 소변 6회 미만\n\n✅ 체크리스트:\n□ 하루 8-12회 수유\n□ 소변 6회 이상\n□ 주당 150-200g 증가\n□ 피부 촉촉함\n\n→ 전부 OK면 괜찮아요!',
+            
+            '체중증가': '체중이 잘 안 늘어서 걱정이시군요 😔\n\n📊 정상 체중 증가:\n• 생후 2주: 출생 체중 회복\n• 0-3개월: 주당 150-200g\n• 3-6개월: 주당 100-150g\n\n🔍 원인 확인:\n\n1. 수유 횟수 부족\n• 하루 8-12회 미만?\n\n2. 잘못된 젖 물림\n• 유륜 전체 안 물림?\n• 빨아도 안 나옴?\n\n3. 모유량 부족\n• 소변 6회 미만?\n• 가슴 항상 부드러움?\n\n4. 아기가 너무 많이 잠\n• 3-4시간 넘게 잠?\n\n✅ 해결 방법:\n\n1. 자주 수유 🍼\n• 2-3시간마다\n• 밤에도 깨워서\n• 한 번에 15-20분\n\n2. 젖 물림 확인 🎯\n• 전문가 도움\n• 올바른 자세\n\n3. 젖량 늘리기 💧\n• 수유 후 유축\n• 충분한 수분/영양\n• 휴식\n\n⚠️ 즉시 병원:\n• 2주간 체중 변화 없음\n• 소변 6회 미만\n• 아기 기운 없음\n• 피부 탄력 없음',
+            
+            '밤수유': '밤수유가 힘드시죠 😴\n\n🌙 왜 필요할까요?\n\n• 프롤락틴: 새벽 2-6시 최고조\n• 젖량 유지에 필수\n• 아기 성장 호르몬 분비\n\n⏰ 월령별 횟수:\n\n신생아 (0-4주):\n• 밤 3-4회\n• 2-3시간마다\n\n1-3개월:\n• 밤 2-3회\n• 3-4시간 간격\n\n4-6개월:\n• 밤 1-2회\n• 4-6시간 간격\n\n💡 편하게 하는 방법:\n\n1. 침대 옆 아기 침대 🛏️\n• 빨리 수유 가능\n• 덜 깸\n\n2. 조명 최소화 💡\n• 간접 조명\n• 또는 어둡게\n\n3. 대화 최소화 🤫\n• 말 안 하기\n• 놀아주지 않기\n\n4. 누워서 수유 😴\n• 엄마도 쉴 수 있음\n• 안전하게!\n\n5. 아빠 도움 👨‍👶\n• 기저귀, 트림\n• 교대로 하기\n\n📉 언제 줄일까:\n\n준비 확인:\n□ 출생 체중 2배 이상\n□ 6kg 이상\n□ 낮에 충분히 먹음\n\n→ 모두 YES면 서서히 줄이기!\n\n💚 기억하세요:\n\n밤수유는 힘들지만\n아기 성장에 필수예요.\n\n언젠가는 끝나요!\n대부분 12-18개월 사이\n자연스럽게 중단돼요.',
+            
+            '모유보관': '모유 보관/해동 방법! 🧊\n\n📦 보관 용기:\n• 전용 모유 팩 (추천)\n• 유리/BPA-free 플라스틱 병\n• 날짜/시간 꼭 표시\n\n⏰ 보관 기간:\n\n실온 (25도):\n• 4시간 (안전)\n• 6-8시간 (최대)\n\n냉장 (4도):\n• 4일 (권장)\n• 5-8일 (최대)\n\n냉동 (-18도):\n• 6개월 (권장)\n• 12개월 (최대)\n\n💡 보관 팁:\n\n1. 냉장고 안쪽 📍\n• 문쪽 X (온도 변화)\n• 안쪽 깊숙이\n\n2. 소량 분할 🧊\n• 60-120ml씩\n• 낭비 방지\n\n3. 냉동 시 여유 공간 📦\n• 10% 비워두기\n• 얼면 부피 증가\n\n🔥 해동 방법:\n\n✅ 올바른 방법:\n1. 냉장 해동 (권장)\n   • 냉동→냉장 밤새\n   • 24시간 내 사용\n\n2. 미지근한 물\n   • 37도 물에 담그기\n   • 10-15분\n\n3. 흐르는 물\n   • 찬물→미지근한 물\n\n❌ 절대 안 됨:\n• 전자레인지 X\n• 끓는 물 X\n• 직접 가열 X\n→ 영양소 파괴!\n\n♻️ 재냉동:\n• 해동 모유 재냉동 X\n• 남은 모유:\n  - 실온 1-2시간 내 재사용\n  - 그 이후 버리기\n\n🧪 모유 분리:\n• 정상이에요!\n• 지방이 위로\n• 가볍게 흔들기',
+            
+            '유선염': '🚨 유선염 (유방염) 의심! 즉시 병원!\n\n⚠️ 젖몸살 vs 유선염:\n\n젖몸살 (단순):\n• 양쪽 가슴 부음\n• 발열 없거나 미열\n• 24시간 내 호전\n\n유선염 (심각):\n• 한쪽만 심하게\n• 38도 이상 고열\n• 빨갛게 부어오름\n• 48시간 지나도 악화\n\n🔍 유선염 증상:\n\n필수 증상:\n✅ 가슴 한쪽이 빨갛게 부음\n✅ 만지면 뜨겁고 딱딱함\n✅ 38도 이상 발열\n✅ 극심한 통증\n\n추가 증상:\n• 오한, 떨림\n• 심한 피로감\n• 독감 같은 느낌\n• 근육통, 두통\n• 메스꺼움\n\n🏥 즉시 병원 가야!\n\n🚨 응급 상황:\n\n즉시 병원:\n✅ 38도 이상 12시간+\n✅ 빨간 부위 확산\n✅ 덩어리가 커짐\n✅ 고름이나 피\n✅ 극심한 통증\n✅ 24시간 내 악화\n\n→ 항생제 필요!\n\n💊 병원 치료:\n\n1. 항생제 처방 💊\n\n필수:\n• 10-14일 복용\n• 증상 좋아져도 끝까지!\n• 중단 시 재발\n\n수유 중 안전:\n• 디클록사실린\n• 세팔렉신\n• 에리스로마이신\n\n2. 진통제 🌡️\n\n타이레놀/이부프로펜:\n• 통증 완화\n• 발열 조절\n• 수유 중 안전\n\n3. 추가 검사\n\n필요시:\n• 유방 초음파\n• 농양 확인\n• 배농 필요 여부\n\n💡 집에서 할 일:\n\n병원 치료와 함께!\n\n1. 계속 수유! 🍼\n\n매우 중요:\n• 수유 중단 X\n• 아픈 쪽부터 수유\n• 2시간마다\n• 완전히 비우기\n\n안전:\n• 아기에게 전염 X\n• 항생제 복용 중에도 OK\n\n2. 충분한 휴식 😴\n\n절대 필수:\n• 침대에서 쉬기\n• 가사 미루기\n• 도움 요청\n• 스트레스 줄이기\n\n3. 수분 섭취 💧\n\n많이 마시기:\n• 하루 3L 이상\n• 탈수 방지\n• 회복 촉진\n\n4. 찜질 🌡️\n\n따뜻한 찜질:\n• 수유 전 5-10분\n• 혈액 순환\n• 사출 반사 촉진\n\n차가운 찜질:\n• 수유 후 10-15분\n• 염증 완화\n• 통증 감소\n\n5. 부드러운 마사지 💆\n\n조심스럽게:\n• 겨드랑이→유두 방향\n• 부드럽게\n• 강하게 누르지 마세요\n\n⚠️ 농양 주의!\n\n농양이란?\n• 유선염 악화\n• 고름 주머니 생김\n• 배농 수술 필요\n\n징후:\n• 덩어리 계속 커짐\n• 항생제에도 악화\n• 피부가 얇아짐\n• 물렁물렁한 느낌\n\n→ 즉시 재진료!\n\n📅 회복 기간:\n\n항생제 복용 후:\n\n24-48시간:\n• 발열 내려감\n• 통증 감소 시작\n\n5-7일:\n• 증상 많이 호전\n• 부기 감소\n\n10-14일:\n• 완전 회복\n• 항생제 끝까지!\n\n💚 예방법:\n\n재발 방지:\n\n✅ 규칙적 수유\n• 한쪽 너무 오래 방치 X\n• 밤수유 건너뛰지 않기\n\n✅ 완전히 비우기\n• 수유 후 유방 부드러워야\n• 필요시 유축\n\n✅ 조이는 옷 피하기\n• 브래지어 여유있게\n• 와이어 없는 것\n\n✅ 충분한 휴식\n• 피로가 주 원인\n• 도움 요청하기\n\n✅ 스트레스 관리\n• 면역력 저하 방지\n\n🚨 Remember:\n\n유선염은 응급!\n\n빨간 부위 + 고열 = 즉시 병원!\n\n항생제 꼭 끝까지!\n중단하면 재발해요!\n\n수유는 계속하세요!\n치료하면서도 안전해요! 💪',
+            
+            '유두상처': '유두 상처로 아프시죠 😢\n\n🔍 상처 종류:\n\n1. 백반점 (하얀 막) ⚪\n• 유두 끝에 하얀 막\n• 젖 찌꺼기 or 물집\n• 따뜻한 물로 부드럽게\n\n2. 열상 (갈라짐) 💔\n• 유두가 갈라짐\n• 젖 물림 문제\n• 자세 교정 필요\n\n3. 수포 (물집) 💧\n• 마찰로 생김\n• 자세 확인\n\n✅ 대처 방법:\n\n1. 올바른 물림 🎯\n• 유륜 전체 깊게\n• 이게 가장 중요!\n\n2. 모유 바르기 💧\n• 수유 후 모유 짜서\n• 유두에 바르고 말리기\n• 천연 치유제!\n\n3. 유두 보호기 🛡️\n• 임시 방편\n• 너무 오래 사용 X\n\n4. 통증 심하면 💊\n• 한쪽만 먼저 수유\n• 덜 아픈 쪽부터\n• 유축 병행\n\n⚠️ 병원 가야:\n• 2주 이상 안 나음\n• 고름, 출혈\n• 극심한 통증\n\n📞 상담: 010-7573-2475\n박보림 IBCLC',
+            
+            '체중증가': '아기 체중이 걱정되시는군요 😔\n\n🔍 정상 체중 증가:\n\n📊 월령별 기준:\n\n**0-3개월:**\n• 주당 150-200g\n• 월 600-800g\n\n**3-6개월:**\n• 주당 100-150g\n• 월 400-600g\n\n**6-12개월:**\n• 주당 70-100g\n• 월 300-400g\n\n✅ 충분히 먹는지 확인:\n\n1. 소변 횟수 💧\n• 하루 6회 이상\n• 연한 노란색\n\n2. 대변 상태 💩\n• 신생아: 하루 3-4회\n• 1개월 후: 감소 가능\n\n3. 수유 후 아기 😊\n• 만족스러워 보임\n• 2-3시간 잘 잠\n\n4. 피부 상태 👶\n• 촉촉하고 탄력\n• 입술, 혀 촉촉\n\n⚠️ 문제 신호:\n\n❌ 주당 100g 미만\n❌ 소변 6회 미만\n❌ 축 늘어짐\n❌ 피부 건조\n❌ 수유 후에도 배고파함\n\n💡 대처:\n\n1. 수유 횟수 늘리기 🍼\n• 하루 8-12회\n• 2-3시간마다\n\n2. 완전히 비우기 🤱\n• 양쪽 다 수유\n• 15-20분씩\n\n3. 밤수유 유지 🌙\n• 프롤락틴 높음\n• 젖량 유지\n\n📞 상담: 010-7573-2475\n박보림 IBCLC',
+            
+            '밤수유': '밤수유가 힘드시죠... 😴\n\n밤에 깨서 수유하는 건 정말 힘들어요.\n하지만 아기 발달과 젖량 유지에 중요해요!\n\n🌙 왜 필요할까요?\n\n**프롤락틴 분비:**\n• 새벽 2-6시 최고조\n• 젖 생산 호르몬\n• 밤수유 = 젖량 유지\n\n**아기 위 크기:**\n• 신생아: 작음\n• 자주 먹어야 해요\n\n⏰ 월령별 횟수:\n\n**신생아 (0-4주)**\n• 밤 3-4회\n• 2-3시간마다\n\n**1-3개월**\n• 밤 2-3회\n• 3-4시간 간격\n\n**4-6개월**\n• 밤 1-2회\n• 4-6시간 가능\n\n**6개월 이상**\n• 밤 0-1회\n• 밤새 가능\n\n💡 편하게 하는 방법:\n\n1. 침대 옆 아기침대 🛏️\n• 빨리 수유\n• 덜 깸\n\n2. 조명 최소화 💡\n• 간접 조명\n• 또는 완전히 어둡게\n\n3. 대화 최소화 🤫\n• 말 안 하기\n• 노래 안 하기\n\n4. 기저귀 전략 🧷\n• 젖지 않으면 안 갈기\n• 밤용 기저귀 사용\n\n5. 편한 자세 🤱\n• 누워서 수유 (안전하게)\n• 엄마도 쉴 수 있음\n\n📉 언제부터 줄일까요?\n\n✅ 준비 확인:\n• 체중 6kg 이상\n• 목 가누기\n• 낮에 충분히 먹음\n\n**→ 모두 해당되면 서서히!**\n\n💚 Remember:\n\n밤수유는 힘들지만 의미 있어요.\n• 아기 성장에 필수\n• 엄마-아기 유대감\n• 젖량 유지\n\n이 시기는 지나갑니다! 💪\n\n📞 상담: 010-7573-2475\n박보림 IBCLC',
+            
+            '모유보관': '모유 보관 방법! 🍶\n\n유축한 모유를 안전하게 보관하는 법을 알려드릴게요!\n\n❄️ 보관 기간:\n\n**실온 (20-25도)**\n• 4시간 (안전)\n• 6-8시간 (최대)\n\n**냉장 (4도 이하)**\n• 4일 (권장)\n• 5-8일 (최대)\n\n**냉동 (-18도)**\n• 6개월 (권장)\n• 12개월 (최대)\n\n**냉동실 (별도 깊은 냉동고)**\n• 12개월\n\n📦 보관 용기:\n\n✅ 좋은 것:\n• 모유 전용 팩\n• 유리병\n• BPA-free 플라스틱\n\n⚠️ 주의:\n• 입구 넓은 것\n• 밀폐 잘 되는 것\n• 날짜 표기 가능한 것\n\n💡 보관 팁:\n\n1. 날짜 표기 ✍️\n• 유축 날짜, 시간\n• 오래된 것부터 사용\n\n2. 적당량씩 🥛\n• 60-120ml씩\n• 필요한 만큼만 해동\n• 남기면 버려야 함\n\n3. 냉장고 위치 📍\n• 냉장: 안쪽 선반\n• 냉동: 가장 안쪽\n• 문 쪽 X (온도 변화)\n\n🔥 해동 & 데우기:\n\n✅ 올바른 방법:\n\n**냉동 → 냉장**\n• 전날 밤 냉장 이동\n• 12-24시간 천천히\n\n**데우기**\n• 따뜻한 물에 담그기\n• 또는 중탕\n• 37도 정도 (미지근)\n\n❌ 절대 안 돼요:\n• 전자레인지 X\n• 끓는 물 X\n• 직접 불 X\n→ 영양소 파괴!\n\n🔄 해동 후:\n\n**냉장 해동:**\n• 24시간 내 사용\n• 재냉동 X\n\n**데운 후:**\n• 2시간 내 사용\n• 남으면 버리기\n\n**먹다 남은 것:**\n• 1-2시간 내 재사용\n• 그 후 버리기\n\n💡 모유 분리:\n\n**정상이에요!**\n• 지방이 위로 뜸\n• 살살 흔들어 섞기\n• 세게 흔들지 마세요\n\n📞 상담: 010-7573-2475\n박보림 IBCLC'
+        };
+        
+        function selectAge(age) {
+            selectedAge = age;
+            const topics = topicsByAge[age];
+            
+            if (age === '신생아' && topics[0].topic === '초유') {
+                const buttonsHTML = topics.map(function(t) {
+                    if (t.topic === '초유') {
+                        return '<button class="option-btn" onclick="showAnswer(\'초유\')">' + t.text + '</button>';
+                    } else {
+                        return '<button class="option-btn" onclick="selectTopic(\'' + t.topic + '\')">' + t.text + '</button>';
+                    }
+                }).join('');
+                document.getElementById('topicButtons').innerHTML = buttonsHTML;
+                goToStep(2);
+                return;
+            }
+            
+            const buttonsHTML = topics.map(function(t) {
+                return '<button class="option-btn" onclick="selectTopic(\'' + t.topic + '\')">' + t.text + '</button>';
+            }).join('');
+            
+            document.getElementById('topicButtons').innerHTML = buttonsHTML;
+            goToStep(2);
+        }
+        
+        function selectTopic(topic) {
+            selectedTopic = topic;
+            const situs = situations[topic] || [];
+            
+            if (situs.length === 0) {
+                showAnswer(topic);
+                return;
+            }
+            
+            // 버튼이 1개뿐이면 바로 답변으로
+            if (situs.length === 1) {
+                showAnswer(situs[0].answer);
+                return;
+            }
+            
+            const buttonsHTML = situs.map(function(s) {
+                const urgentClass = s.urgent ? ' urgent' : '';
+                const urgentIcon = s.urgent ? '🚨 ' : '';
+                return '<button class="option-btn' + urgentClass + '" onclick="showAnswer(\'' + s.answer + '\')">' + urgentIcon + s.text + '</button>';
+            }).join('');
+            
+            document.getElementById('situationButtons').innerHTML = buttonsHTML;
+            goToStep(3);
+        }
+        
+        function showAnswer(answerKey) {
+            const answer = answers[answerKey];
+            
+            // 현재 스텝 기록 (답변 표시 전)
+            previousStep = currentStep;
+            
+            if (!answer) {
+                document.getElementById('answerContent').innerHTML = 
+                    '<div class="answer-box">죄송해요! 😔\n\n이 답변은 준비 중이에요.\n조만간 업데이트할게요!</div>' +
+                    '<a href="tel:010-7573-2475" class="expert-btn">👩‍⚕️ 전문가에게 도움 요청하기</a>' +
+                    '<button class="back-btn" onclick="goBack(previousStep)">← 이전으로</button>';
+                goToStep(4);
+                return;
+            }
+            
+            document.getElementById('answerContent').innerHTML = 
+                '<div class="answer-box">' + answer + '</div>' +
+                '<a href="tel:010-7573-2475" class="expert-btn">👩‍⚕️ 전문가에게 도움 요청하기</a>' +
+                '<button class="back-btn" onclick="goBack(previousStep)">← 이전으로</button>';
+            
+            goToStep(4);
+        }
+        
+        function goToStep(step) {
+            var steps = document.querySelectorAll('.step');
+            for (var i = 0; i < steps.length; i++) {
+                steps[i].classList.remove('active');
+            }
+            document.getElementById('step' + step).classList.add('active');
+            
+            var dots = document.querySelectorAll('.progress-dot');
+            for (var i = 0; i < dots.length; i++) {
+                if (i < step) {
+                    dots[i].classList.add('active');
+                } else {
+                    dots[i].classList.remove('active');
+                }
+            }
+            
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function goBack(toStep) {
+            goToStep(toStep);
+        }
+    </script>
+</body>
+</html>
