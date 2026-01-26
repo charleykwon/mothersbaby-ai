@@ -1340,33 +1340,55 @@
                 </div>
             `;
             
-            if (results.length > 1) {
-                html += '<div class="related-questions"><div class="related-title">📌 관련 정보</div>';
-                results.slice(1, 4).forEach(r => {
-                    html += `<div class="related-btn" data-unit-id="${r.unit.id}">${escapeHtml(r.unit.title)}</div>`;
-                });
-                html += '</div>';
-            }
-            
+           if (results.length > 1) {
+    html += '<div class="related-questions"><div class="related-title">📌 관련 정보</div>';
+    results.slice(1, 4).forEach((r, idx) => {
+        html += `<button class="related-btn" data-result-idx="${idx + 1}">${escapeHtml(r.unit.title)}</button>`;
+    });
+    html += '</div>';
+}            
             // 액션 버튼 영역
             html += getActionButtons(main.id, main.title, main.content);
             
             lastMsg.innerHTML = html;
             
-            // 관련 버튼 이벤트 - chatArea 전체에서 검색
-            chatArea.querySelectorAll('.related-btn').forEach(btn => {
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const unitId = this.getAttribute('data-unit-id');
-                    if (unitId) showDetail(unitId);
-                };
-            });
-            
+        // 관련 버튼 이벤트 - results 배열에서 직접 가져옴
+lastMsg.querySelectorAll('.related-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = parseInt(this.getAttribute('data-result-idx'));
+        if (results[idx]) {
+            showResultDetail(results[idx].unit);
+        }
+    });
+});            
             // 액션 버튼 이벤트
             setupActionButtons(chatArea, main);
         }
-        
+        // API 결과 상세 표시
+function showResultDetail(unit) {
+    const isUrgent = unit.urgency?.includes('즉시');
+    const badge = unit.urgency?.includes('즉시') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                  unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                  '<span class="answer-badge badge-normal">' + (unit.urgency || '일반') + '</span>';
+    
+    const newCard = document.createElement('div');
+    newCard.className = 'message';
+    newCard.style.animation = 'fadeIn 0.3s ease';
+    newCard.innerHTML = `
+        <div class="answer-card ${isUrgent ? 'urgent' : ''}">
+            <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+            <div class="answer-title">${escapeHtml(unit.title)}</div>
+            <div class="answer-content">${formatContent(unit.content)}</div>
+            ${unit.keywords?.length ? '<div class="answer-keywords">' + (Array.isArray(unit.keywords) ? unit.keywords : []).map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+        </div>
+        ${getActionButtons(unit.id, unit.title, unit.content)}
+    `;
+    chatArea.appendChild(newCard);
+    setupActionButtons(newCard, unit);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
         function showDetail(unitId) {
             const unit = knowledgeUnits.find(u => u.id === unitId);
             if (!unit) return;
