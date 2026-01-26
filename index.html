@@ -750,6 +750,20 @@
         body.night-mode .autocomplete-item-type {
             background: #2A2F20;
         }
+/* 더보기 버튼 */
+.expand-btn {
+    background: none;
+    border: none;
+    color: var(--olive);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-left: 4px;
+}
+.expand-btn:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
 <body>
@@ -1484,11 +1498,34 @@ function showResultDetail(unit) {
             }
         }
         
-        function formatContent(content) {
-            if (!content) return '';
-            return content.replace(/\n/g, '<br>');
-        }
+       function formatContent(content, maxLength = 400) {
+    if (!content) return '';
+    const formatted = content.replace(/\n/g, '<br>');
+    
+    if (content.length > maxLength) {
+        const truncated = content.substring(0, maxLength);
+        const rest = content.substring(maxLength);
+        const uniqueId = 'expand-' + Math.random().toString(36).substr(2, 9);
         
+        return `
+            <span class="content-preview">${truncated.replace(/\n/g, '<br>')}</span>
+            <span class="content-full" id="${uniqueId}" style="display:none;">${rest.replace(/\n/g, '<br>')}</span>
+            <button class="expand-btn" onclick="toggleExpand('${uniqueId}', this)">...더보기</button>
+        `;
+    }
+    return formatted;
+}
+
+function toggleExpand(id, btn) {
+    const el = document.getElementById(id);
+    if (el.style.display === 'none') {
+        el.style.display = 'inline';
+        btn.textContent = '접기';
+    } else {
+        el.style.display = 'none';
+        btn.textContent = '...더보기';
+    }
+}        
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
