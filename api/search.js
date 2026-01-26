@@ -32,47 +32,89 @@ export default async function handler(req, res) {
     // 검색어 처리
     const searchTerm = query ? query.trim().toLowerCase() : '';
     
-    // 키워드 매핑 (검색어 → 관련 키워드)
+    // 키워드 매핑 (검색어 → 관련 키워드) - 우선순위 반영
     const keywordMap = {
-      '열': ['유선염', '열', '감염', '병원', '응급'],
+      // 유두 관련 - 상처/통증 우선
+      '유두상처': ['유두상처', '균열', '갈라짐', '출혈', '통증', '원인', '치료', '대처'],
+      '유두': ['유두', '균열', '상처', '갈라짐', '통증', '원인'],
+      '균열': ['균열', '갈라짐', '유두상처', '출혈', '치료'],
+      '갈라': ['갈라짐', '균열', '유두상처', '통증'],
+      '젖꼭지': ['유두', '젖꼭지', '상처', '균열', '통증'],
+      
+      // 함몰/편평 유두 (보호기 관련)
+      '함몰': ['함몰유두', '편평유두', '유두보호기', '교정'],
+      '편평': ['편평유두', '함몰유두', '유두보호기'],
+      '보호기': ['유두보호기', '실리콘캡', '함몰', '편평'],
+      
+      // 긴급 상황
+      '열': ['유선염', '열', '감염', '병원', '응급', '고열'],
       '아파': ['통증', '아픔', '유선염', '울혈', '열'],
-      '가슴': ['유방', '가슴', '울혈', '유선염'],
-      '모유량': ['젖양', '모유량', '부족', '늘리기', '분비'],
-      '늘리': ['늘리기', '증가', '촉진', '분비'],
+      '가슴': ['유방', '가슴', '울혈', '유선염', '통증'],
+      '유선염': ['유선염', '열', '감염', '항생제', '병원'],
+      '응급': ['응급', '병원', '즉시', '위험'],
+      
+      // 모유량
+      '모유량': ['젖양', '모유량', '부족', '늘리기', '분비', '증가'],
+      '젖양': ['젖양', '모유량', '부족', '늘리기'],
+      '늘리': ['늘리기', '증가', '촉진', '분비', '젖양'],
       '부족': ['부족', '젖양', '모유량', '늘리기'],
-      '자세': ['자세', '래치', '물림', '안기'],
-      '물림': ['래치', '물림', '자세', '깊은물림'],
-      '밤': ['야간', '밤', '수면', '밤중수유'],
-      '야간': ['야간수유', '밤중수유', '수면'],
-      '직장': ['복직', '직장', '유축', '회사'],
-      '복직': ['복직', '직장', '유축', '펌프'],
-      '유축': ['유축', '펌프', '저장', '보관'],
-      '이유식': ['이유식', '이유', '고형식', '시작'],
-      '젖떼기': ['젖떼기', '단유', '이유'],
-      '유두': ['유두', '균열', '상처', '함몰'],
-      '함몰': ['함몰유두', '편평유두', '유두'],
-      '쌍둥이': ['쌍둥이', '다태아', '특수'],
-      '미숙아': ['미숙아', '조산', 'NICU']
+      
+      // 자세/래치
+      '자세': ['자세', '래치', '물림', '안기', '포지션'],
+      '물림': ['래치', '물림', '자세', '깊은물림', '딥래치'],
+      '래치': ['래치', '딥래치', '깊은물림', '자세'],
+      '안기': ['안기', '자세', '포지션', '요람'],
+      
+      // 야간/수면
+      '밤': ['야간', '밤', '수면', '밤중수유', '야간수유'],
+      '야간': ['야간수유', '밤중수유', '수면', '밤'],
+      '수면': ['수면', '야간', '밤', '잠'],
+      '밤중': ['밤중수유', '야간수유', '수면'],
+      
+      // 직장/복직
+      '직장': ['복직', '직장', '유축', '회사', '워킹맘'],
+      '복직': ['복직', '직장', '유축', '펌프', '냉동'],
+      '회사': ['회사', '직장', '복직', '유축'],
+      
+      // 유축/보관
+      '유축': ['유축', '펌프', '저장', '보관', '냉동'],
+      '펌프': ['펌프', '유축기', '유축'],
+      '냉동': ['냉동', '보관', '저장', '해동'],
+      '보관': ['보관', '저장', '냉동', '냉장'],
+      
+      // 이유식/젖떼기
+      '이유식': ['이유식', '이유', '고형식', '시작', '먹거리'],
+      '젖떼기': ['젖떼기', '단유', '이유', '졸업'],
+      '단유': ['단유', '젖떼기', '이유'],
+      
+      // 특수상황
+      '쌍둥이': ['쌍둥이', '다태아', '특수', '동시수유'],
+      '미숙아': ['미숙아', '조산', 'NICU', '특수'],
+      '조산': ['조산', '미숙아', 'NICU']
     };
 
     // 검색어에서 관련 키워드 추출
     let expandedKeywords = [searchTerm];
+    let priorityKeywords = []; // 우선순위 키워드
+    
     for (const [key, values] of Object.entries(keywordMap)) {
       if (searchTerm.includes(key)) {
+        // 첫 번째로 매칭된 키워드를 우선순위로
+        if (priorityKeywords.length === 0) {
+          priorityKeywords = values.slice(0, 3); // 상위 3개
+        }
         expandedKeywords = [...expandedKeywords, ...values];
       }
     }
-    expandedKeywords = [...new Set(expandedKeywords)]; // 중복 제거
+    expandedKeywords = [...new Set(expandedKeywords)];
 
     // Supabase REST API로 직접 검색
     let url = `${SUPABASE_URL}/rest/v1/knowledge_units?select=*`;
     
-    // 카테고리 필터
     if (categoryId) {
       url += `&category=eq.${categoryId}`;
     }
 
-    // 검색 실행
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -96,21 +138,40 @@ export default async function handler(req, res) {
         const content = (item.content || '').toLowerCase();
         const keywords = Array.isArray(item.keywords) ? item.keywords.join(' ').toLowerCase() : '';
 
-        // 정확한 검색어 매칭
-        if (title.includes(searchTerm)) score += 10;
-        if (content.includes(searchTerm)) score += 5;
-        if (keywords.includes(searchTerm)) score += 8;
+        // 정확한 검색어 매칭 (최고 우선순위)
+        if (title.includes(searchTerm)) score += 15;
+        if (content.includes(searchTerm)) score += 8;
+        if (keywords.includes(searchTerm)) score += 12;
 
-        // 확장 키워드 매칭
+        // 우선순위 키워드 매칭 (높은 점수)
+        for (const kw of priorityKeywords) {
+          if (title.includes(kw)) score += 10;
+          if (content.includes(kw)) score += 6;
+          if (keywords.includes(kw)) score += 8;
+        }
+
+        // 확장 키워드 매칭 (낮은 점수)
         for (const kw of expandedKeywords) {
-          if (title.includes(kw)) score += 3;
-          if (content.includes(kw)) score += 2;
-          if (keywords.includes(kw)) score += 4;
+          if (!priorityKeywords.includes(kw)) {
+            if (title.includes(kw)) score += 2;
+            if (content.includes(kw)) score += 1;
+            if (keywords.includes(kw)) score += 2;
+          }
         }
 
         // 긴급도 보너스
-        if (item.urgency === '즉시대응필요') score += 5;
-        else if (item.urgency === '24시간내확인') score += 3;
+        if (item.urgency === '즉시대응필요') score += 3;
+        else if (item.urgency === '24시간내확인') score += 2;
+
+        // "보호기", "사용법" 등이 제목에 있으면 점수 감소 (상처 검색 시)
+        if (searchTerm.includes('상처') || searchTerm.includes('균열') || searchTerm.includes('갈라')) {
+          if (title.includes('보호기') || title.includes('사용법')) {
+            score -= 5;
+          }
+          if (title.includes('원인') || title.includes('대처') || title.includes('치료')) {
+            score += 8;
+          }
+        }
 
         return { ...item, score };
       });
