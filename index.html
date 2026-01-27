@@ -1912,6 +1912,19 @@ function toggleExpand(id, btn) {
         
         // 시작
         showOnboarding();
+        // 자동 포맷팅 함수 - 가독성 개선
+function formatReadableText(text) {
+    if (!text) return '';
+    
+    let formatted = text
+        .replace(/([.!?])\s*(\d+\.)/g, '$1\n\n$2')
+        .replace(/([.!?])\s*([✓✅❌⚠️•\-])/g, '$1\n$2')
+        .replace(/:\s*([가-힣])/g, ':\n$2')
+        .replace(/\.\s{2,}/g, '.\n\n')
+        .replace(/\n{3,}/g, '\n\n');
+    
+    return formatted;
+}
     </script>
 </body>
 </html>
