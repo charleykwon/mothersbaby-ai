@@ -1481,16 +1481,21 @@ function showDetail(unitId) {
                 });
             }
             
-            if (shareBtn) {
-                shareBtn.addEventListener('click', function() {
-                    const text = unit.title + '\n\n' + unit.content.replace(/<[^>]*>/g, '');
-                    if (navigator.share) {
-                        navigator.share({ title: unit.title, text: text });
-                    } else {
-                        alert('공유 기능은 모바일에서 사용 가능합니다.');
-                    }
-                });
-            }
+           if (shareBtn) {
+            shareBtn.addEventListener('click', function() {
+                const url = 'https://mothersbaby-ai.vercel.app';
+                const text = `[마더스베이비]\n\n📌 ${unit.title}\n\n${unit.content.replace(/<[^>]*>/g, '').substring(0, 150)}...\n\n👉 더 많은 정보: ${url}`;
+                
+                if (navigator.share) {
+                    navigator.share({ title: unit.title, text: text, url: url });
+                } else {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('클립보드에 복사되었습니다!');
+                    });
+                }
+            });
+        }
+        }
             
             if (copyBtn) {
                 copyBtn.addEventListener('click', function() {
