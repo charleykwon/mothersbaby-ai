@@ -1509,9 +1509,9 @@ function formatContent(content, maxLength = 400) {
     
     // 자동 줄바꿈 적용
     let processed = content
-        .replace(/\.\s+(\d+)\.\s+/g, '.\n\n$1. ')
+        .replace(/\.\s+/g, '.\n')
         .replace(/(✓|✅|❌|⚠️|•)\s*/g, '\n$1 ')
-        .replace(/([가-힣]{2,}):\s*\n*([가-힣])/g, '$1:\n$2')
+        .replace(/([가-힣]{2,}):\s*/g, '$1:\n')
         .replace(/\n{3,}/g, '\n\n')
         .trim();
     
@@ -1529,8 +1529,7 @@ function formatContent(content, maxLength = 400) {
         `;
     }
     return formatted;
-}
-        function toggleExpand(id, btn) {
+}        function toggleExpand(id, btn) {
     const el = document.getElementById(id);
     if (el.style.display === 'none') {
         el.style.display = 'inline';
