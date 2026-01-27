@@ -1,0 +1,26 @@
+{
+  "name": "육아 컴패니언 AI - 마더스베이비",
+  "short_name": "육아컴패니언",
+  "description": "초보 엄마를 위한 맞춤형 모유수유 가이드",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F6EE",
+  "theme_color": "#5D6D3A",
+  "orientation": "portrait-primary",
+  "lang": "ko",
+  "categories": ["health", "lifestyle", "education"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
