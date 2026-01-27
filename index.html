@@ -1506,13 +1506,22 @@ function showDetail(unitId) {
         
        function formatContent(content, maxLength = 400) {
     if (!content) return '';
-    const formatted = content.replace(/\n/g, '<br>');
     
-    if (content.length > maxLength) {
-        const truncated = content.substring(0, maxLength);
-        const rest = content.substring(maxLength);
+    // 자동 줄바꿈 적용
+    let processed = content
+        .replace(/(\d+)\.\s*/g, '\n$1. ')
+        .replace(/(✓|✅|❌|⚠️|•|-)\s*/g, '\n$1 ')
+        .replace(/([가-힣]{2,}):\s*([가-힣])/g, '$1:\n$2')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+    
+    const formatted = processed.replace(/\n/g, '<br>');
+
+    if (processed.length > maxLength) {
+        const truncated = processed.substring(0, maxLength);
+        const rest = processed.substring(maxLength);
         const uniqueId = 'expand-' + Math.random().toString(36).substr(2, 9);
-        
+
         return `
             <span class="content-preview">${truncated.replace(/\n/g, '<br>')}</span>
             <span class="content-full" id="${uniqueId}" style="display:none;">${rest.replace(/\n/g, '<br>')}</span>
@@ -1521,8 +1530,7 @@ function showDetail(unitId) {
     }
     return formatted;
 }
-
-function toggleExpand(id, btn) {
+        function toggleExpand(id, btn) {
     const el = document.getElementById(id);
     if (el.style.display === 'none') {
         el.style.display = 'inline';
