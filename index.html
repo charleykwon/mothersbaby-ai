@@ -1380,55 +1380,54 @@ lastMsg.querySelectorAll('.related-btn').forEach(btn => {
             // 액션 버튼 이벤트
             setupActionButtons(chatArea, main);
         }
-        // API 결과 상세 표시
+      // API 결과 상세 표시 - 카드 교체 방식
 function showResultDetail(unit) {
     const isUrgent = unit.urgency?.includes('즉시');
     const badge = unit.urgency?.includes('즉시') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
                   unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
                   '<span class="answer-badge badge-normal">' + (unit.urgency || '일반') + '</span>';
     
-    const newCard = document.createElement('div');
-    newCard.className = 'message';
-    newCard.style.animation = 'fadeIn 0.3s ease';
-   newCard.innerHTML = `
-    <div class="answer-card ${isUrgent ? 'urgent' : ''}">
-        <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
-        <div class="answer-title">${escapeHtml(unit.title)}</div>
-        <div class="answer-content">${formatContent(unit.content)}</div>
-        ${unit.keywords?.length ? '<div class="answer-keywords">' + (Array.isArray(unit.keywords) ? unit.keywords : []).map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
-    </div>
-`;
-    chatArea.appendChild(newCard);
+    // 기존 answer-card 찾아서 교체
+    const existingCard = chatArea.querySelector('.answer-card');
+    if (existingCard) {
+        existingCard.className = `answer-card ${isUrgent ? 'urgent' : ''}`;
+        existingCard.innerHTML = `
+            <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+            <div class="answer-title">${escapeHtml(unit.title)}</div>
+            <div class="answer-content">${formatContent(unit.content)}</div>
+            ${unit.keywords?.length ? '<div class="answer-keywords">' + (Array.isArray(unit.keywords) ? unit.keywords : []).map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+        `;
+        existingCard.style.animation = 'fadeIn 0.3s ease';
+    }
     
-    chatArea.scrollTop = chatArea.scrollHeight;
+    // 스크롤을 맨 위로
+    chatArea.scrollTop = 0;
+function showDetail(unitId) {
+    const unit = knowledgeUnits.find(u => u.id === unitId);
+    if (!unit) return;
+    
+    const isUrgent = unit.urgency?.includes('즉시대응');
+    const badge = unit.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
+                  unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
+                  '<span class="answer-badge badge-normal">' + (unit.timeline || '일반') + '</span>';
+    
+    // 기존 answer-card 찾아서 교체
+    const existingCard = chatArea.querySelector('.answer-card');
+    if (existingCard) {
+        existingCard.className = `answer-card ${isUrgent ? 'urgent' : ''}`;
+        existingCard.innerHTML = `
+            <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
+            <div class="answer-title">${escapeHtml(unit.title)}</div>
+            <div class="answer-content">${formatContent(unit.content)}</div>
+            ${unit.keywords?.length ? '<div class="answer-keywords">' + unit.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
+        `;
+        existingCard.style.animation = 'fadeIn 0.3s ease';
+    }
+    
+    // 스크롤을 맨 위로
+    chatArea.scrollTop = 0;
 }
-        function showDetail(unitId) {
-            const unit = knowledgeUnits.find(u => u.id === unitId);
-            if (!unit) return;
-            const isUrgent = unit.urgency?.includes('즉시대응');
-            const badge = unit.urgency?.includes('즉시대응') ? '<span class="answer-badge badge-urgent">🚨 즉시대응</span>' :
-                          unit.urgency?.includes('24시간') ? '<span class="answer-badge badge-warning">⏰ 24시간내</span>' :
-                          '<span class="answer-badge badge-normal">' + (unit.timeline || '일반') + '</span>';
-            
-            const newCard = document.createElement('div');
-            newCard.className = 'message';
-            newCard.style.animation = 'fadeIn 0.3s ease';
-            newCard.innerHTML = `
-                <div class="answer-card ${isUrgent ? 'urgent' : ''}">
-                    <div class="answer-header">${badge}<span class="answer-badge badge-normal">${unit.chapter || ''}</span></div>
-                    <div class="answer-title">${escapeHtml(unit.title)}</div>
-                    <div class="answer-content">${formatContent(unit.content)}</div>
-                    ${unit.keywords?.length ? '<div class="answer-keywords">' + unit.keywords.map(k=>'<span class="keyword">#'+k+'</span>').join('') + '</div>' : ''}
-                </div>
-                ${getActionButtons(unit.id, unit.title, unit.content)}
-            `;
-            chatArea.appendChild(newCard);
-            
-            // 액션 버튼 이벤트
-            setupActionButtons(newCard, unit);
-            
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
+}
         
         function getActionButtons(id, title, content) {
             return `
