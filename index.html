@@ -216,6 +216,30 @@
         .search-btn:hover { background: var(--black-olive); }
         .search-btn svg { width: 22px; height: 22px; fill: white; }
         
+        .voice-btn {
+            background: var(--mothers-olive);
+            border: none; padding: 0 16px;
+            cursor: pointer; transition: all 0.3s;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .voice-btn:hover { background: var(--black-olive); }
+        .voice-btn svg { width: 22px; height: 22px; fill: white; }
+        .voice-btn.listening { background: #e74c3c; animation: pulse 1s infinite; }
+        .voice-btn.listening svg rect { animation: wave 0.5s ease-in-out infinite alternate; }
+        .voice-btn.listening svg rect:nth-child(1) { animation-delay: 0s; }
+        .voice-btn.listening svg rect:nth-child(2) { animation-delay: 0.1s; }
+        .voice-btn.listening svg rect:nth-child(3) { animation-delay: 0.2s; }
+        .voice-btn.listening svg rect:nth-child(4) { animation-delay: 0.3s; }
+        .voice-btn.listening svg rect:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes wave {
+            from { transform: scaleY(0.5); }
+            to { transform: scaleY(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
         /* 임산부 준비 가이드 */
         .prep-guide { padding: 0 20px 30px; }
         
@@ -1306,6 +1330,15 @@
             <div class="search-wrapper">
                 <div class="search-box">
                     <input type="text" class="search-input" id="searchInput" placeholder="궁금한 것을 검색하세요..." onkeypress="handleSearch(event)">
+                    <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()" aria-label="음성 검색">
+                        <svg viewBox="0 0 24 24" class="voice-icon">
+                            <rect x="4" y="8" width="2" height="8" rx="1"/>
+                            <rect x="8" y="5" width="2" height="14" rx="1"/>
+                            <rect x="12" y="3" width="2" height="18" rx="1"/>
+                            <rect x="16" y="5" width="2" height="14" rx="1"/>
+                            <rect x="20" y="8" width="2" height="8" rx="1"/>
+                        </svg>
+                    </button>
                     <button class="search-btn" onclick="performSearch()">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     </button>
@@ -2727,6 +2760,66 @@ https://www.youtube.com/embed/VIDEO_ID<br><br>
         }
         
         // ========== 검색 ==========
+        let recognition = null;
+        let isListening = false;
+        
+        function startVoiceSearch() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showToast('이 브라우저는 음성 검색을 지원하지 않아요');
+                return;
+            }
+            
+            if (isListening) {
+                stopVoiceSearch();
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = function() {
+                isListening = true;
+                voiceBtn.classList.add('listening');
+                showToast('듣고 있어요...');
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('searchInput').value = transcript;
+                stopVoiceSearch();
+                performSearch();
+            };
+            
+            recognition.onerror = function(event) {
+                stopVoiceSearch();
+                if (event.error === 'no-speech') {
+                    showToast('음성이 감지되지 않았어요');
+                } else {
+                    showToast('음성 인식 중 오류가 발생했어요');
+                }
+            };
+            
+            recognition.onend = function() {
+                stopVoiceSearch();
+            };
+            
+            recognition.start();
+        }
+        
+        function stopVoiceSearch() {
+            isListening = false;
+            document.getElementById('voiceBtn').classList.remove('listening');
+            if (recognition) {
+                recognition.stop();
+                recognition = null;
+            }
+        }
+        
         function handleSearch(e) { if (e.key === 'Enter') performSearch(); }
         
         function performSearch() {
